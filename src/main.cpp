@@ -62,7 +62,7 @@ lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 11.26, lemlib::Omniwhee
 // lemlib::ControllerSettings lateral_controller(14, 0, 91.5, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
 // lemlib::ControllerSettings lateral_controller(15, 0, 82.5, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
 lemlib::ControllerSettings lateral_controller(9, 0, 45.35, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
-lemlib::ControllerSettings angular_controller(5, 0, 42.75, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings angular_controller(5, 0, 42, 0, 0, 0, 0, 0, 0);
 // lemlib::ControllerSettings angular_controller(5, 0, 30, 0, 0, 0, 0, 0, 0);
 
 
