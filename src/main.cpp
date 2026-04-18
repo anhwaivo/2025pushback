@@ -1,4 +1,7 @@
 #include "main.h"
+#include "auton.h"
+#include "auton_selector.h"
+// #include "monte.h"  // MCL disabled to save resources
 #include "lemlib/api.hpp" 
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/adi.hpp"
@@ -8,52 +11,60 @@
 #include "pros/motors.hpp"
 #include "pros/rotation.hpp"
 #include "pros/rtos.hpp"
+#include "pros/apix.h"  
 #include <future>
-
+#include <cmath>
+#include <cstdio>
 
 
 // ========== GLOBAL STATE ==========
 bool calibrate = false;
+bool disableBrainScreen = false;  // Set true during match to save resources
 
 // === Motors ===
-pros::MotorGroup leftMotors({-2, -4, -3}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({7, 8, 9}, pros::MotorGearset::blue);
-pros::Motor motorTrai(12, pros::MotorGearset::blue);
-pros::Motor motorPhai(-13, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-12, -13, -14}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({17, 18, 19}, pros::MotorGearset::blue);
+pros::Motor intake(-16, pros::MotorGearset::blue);
+pros::Motor conveyor(9, pros::MotorGearset::blue);
+pros::Motor outtake(8, pros::MotorGearset::blue);
 
 // === Pneumatics ===
-// NOTE: Pneumatics configuration has changed - stage from right changed to stage from up
-pros::adi::Pneumatics stage('A', false); // Stage (from up)
-pros::adi::Pneumatics descoreCenter('B', false); // DescoreCenter
-pros::adi::Pneumatics counterLoader('C', false);
-pros::adi::Pneumatics descoreLeft('D', true);
-pros::adi::Pneumatics doublePark('E', false);
-pros::adi::Pneumatics odoLift('F', false);
-pros::adi::Pneumatics gripper('G', true); 
+pros::adi::Pneumatics stage('A', true);
+pros::adi::Pneumatics descoreRight('E', true); 
+pros::adi::Pneumatics counterLoader('F', false);
+pros::adi::Pneumatics descoreLeft('C', true);
+pros::adi::Pneumatics odoLift('B', true);
+pros::adi::Pneumatics blockblock('D', false);
 
 // === Sensors ===
-pros::Rotation horizontal_encoder(-5);
-pros::Rotation vertical_encoder(-6);
-pros::Imu imu(10);
-pros::Optical colorSensor(8);
-pros::Distance distance_sensor(14); 
+pros::Rotation horizontal_encoder(10);
+pros::Rotation vertical_encoder(1);
+pros::Imu imu(2);
+pros::Optical colorSensor(4);
+
+// === Distance Sensors for Monte Carlo Localization ===
+#include "monte_config.h"
+pros::Distance dNorth(MCL_SENSOR_NORTH_PORT);  // North-facing sensor
+pros::Distance dSouth(MCL_SENSOR_SOUTH_PORT);  // South-facing sensor
+pros::Distance dEast(MCL_SENSOR_EAST_PORT);    // East-facing sensor
+pros::Distance dWest(MCL_SENSOR_WEST_PORT);     // West-facing sensor
 
 // === Tracking Wheels ===
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -1);
-// lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, 1);
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0);
-// lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, 1);
-
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.75);
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, 0.8); // nullpt
 // === Odom sensors ===
 lemlib::OdomSensors sensors(&vertical_tracking_wheel, nullptr, &horizontal_tracking_wheel, nullptr, &imu);
 
 // === Drivetrain ===
-lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 12.8740157, lemlib::Omniwheel::NEW_325, 450, 2);
+lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 11.26, lemlib::Omniwheel::NEW_325, 450, 2);
 
 // === PID Controllers ===
-lemlib::ControllerSettings lateral_controller(12, 0, 60, 0, 0, 0, 0, 0, 0); // D 45 D2 35
-// lemlib::ControllerSettings lateral_controller(10, 0, 0, 0, 0, 0, 0, 0, 0); // D 45 D2 35
-lemlib::ControllerSettings angular_controller(6, 0, 30, 0, 0, 0, 0, 0, 0); // ngon
+// lemlib::ControllerSettings lateral_controller(14, 0, 91.5, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
+// lemlib::ControllerSettings lateral_controller(15, 0, 82.5, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
+lemlib::ControllerSettings lateral_controller(9, 0, 45.35, 0, 0, 0, 0, 0, 0); // 8 41 | 14 87 | 14 91.5
+lemlib::ControllerSettings angular_controller(5, 0, 42.75, 0, 0, 0, 0, 0, 0);
+// lemlib::ControllerSettings angular_controller(5, 0, 30, 0, 0, 0, 0, 0, 0);
+
 
 // === Input Curves ===
 // ExpoDriveCurve(deadband, minOutput, curve)
@@ -64,45 +75,63 @@ lemlib::ControllerSettings angular_controller(6, 0, 30, 0, 0, 0, 0, 0, 0); // ng
 // lemlib::ExpoDriveCurve throttle_curve(3, 5, 1.12); // Tăng từ 1.019 lên 1.12 để chậm hơn ở input nhỏ
 // lemlib::ExpoDriveCurve steer_curve(3, 5, 1.12); // Đồng bộ với throttle, tăng từ 1.05 lên 1.12
 
-// old settings:
-// 3, 10, 1.019
-// 20, 5, 1.05
-
 // === Chassis ===
 // lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors, &throttle_curve, &steer_curve);
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
 
-// === Controller ===oo
+// === Controller ===
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
-// pros::Distance distance_sensor(15);
 
-void disabled() {}
-void competition_initialize() {}
+// ========== AUTON SELECTOR ==========
+AutonSelector auton_selector;
 
+// ========== MANUAL AUTON SELECTION ==========
+// Set this to nullptr to use selector, or set to a function pointer to override selector
+// Example: manualAutonFunction = &leftcenterdescore;
+// Available autons:
+// - &leftdescore7bloc
+// - &leftfastdescore
+// - &leftcenterdescore
+// - &leftlongcenter2
+// - &rightdescore7bloc
+// - &rightcenterdescore
+// - &rightdescore9bloc
+// - &skillz
+// - &testodo11
+// - &pidTuneDrive
+// - &pidTuneTurn
+// - &pidTuneVelocity
+// - &awp
+AutonSelector::routine_action_t manualAutonFunction = &leftlongcenter2; // nullptr = use selector, or set to function pointer
 
-const char* autonNames[] = {
-    "Right WP",
-    "Right Elim",
-    "Right Solo WP",
+void disabled() {
+    // Update selector while disabled
+    while (pros::competition::is_disabled()) {
+        auton_selector.update();
+        pros::delay(20);
+    }
+}
 
-    "Left WP",
-    "Left Elim",
-    "Left Solo WP",
+void competition_initialize() {
+    // Initialize selector for competition
+    auton_selector.initialize();
+    while (pros::competition::is_disabled()) {
+        auton_selector.update();
+        pros::delay(20);
+    }
+}
 
-    "Skills"
-};
 
 // ========== HELPER STATES ==========
-// Toggle giữa skill và match mode
-bool isSkillMode = false; // false = match mode, true = skill mode
-bool boostMode = false; // Chỉ dùng trong skill mode: boost = drivetrain 75%, intake 79 khi stage 0
+// bool isSkillMode = false;  // rememberrr this
+// bool boostMode = false;
 
 bool stageState = false;
 bool gripperState = false;
 bool counterLoaderState = false;
 bool punchGoalState = false;
-bool descoreLeftState = false;
-bool descoreCenterState = false;
+bool descoreLeftState = true;
+bool descoreRightState = true;
 bool odoLiftState = false;
 bool doubleParkState = false;
 bool sequenceState = false;
@@ -112,594 +141,406 @@ bool loaderMode = false;
 double speedAbove;
 double speedUnder;
 bool colorSortEnabled = false;
+bool useManualColorSort = true;
+AutonSelector::Color manualColorToSort = AutonSelector::Color::RED;
+// Intake mode values:
+// 0 = Stop motors (off)
+// 1 = Blockblock mode (intake with blockblock engaged)
+// 2 = Long goal mode (intake for long goal, blockblock off)
+// 3 = Center goal mode (intake for center goal, blockblock on)
+// 4 = Reverse/outtake mode (motorTrai reverse, motorPhai forward)
 int intakeMode = 0;
+int intakeSpeed = 127;  // 0-127, used by intake task when applying intakeMode (set from auton)
 int current_auton = 0;
 bool odoLifted = false;
-int currentStageMode = -1; // Lưu stage mode hiện tại (-1 = chưa set, 0-3 = các mode)
+int currentStageMode = -1;
+bool manualPneumaticOverride = false; // When true, intakeTask won't auto-return pneumatics
 
-// ========== TASKS ==========
-void intakeTaskFn() {
-    colorSensor.set_led_pwm(100); 
 
-    while (true) {
-        int speed = 127; // Match mode: luôn max speed
-        
-        // Skill mode: stage 0 và boost mode = 79, các trường hợp khác = 127
-        if (isSkillMode && boostMode && currentStageMode == 0) {
-            speed = 79;
-        }
-        
-        if (intakeMode == 1) { // ĐANG HÚT
-            motorPhai.move(speed);
-            motorTrai.move(speed);
+// ========== HELPER FUNCTIONS ==========
+bool checkBlockDetected() {
+    int proximity = colorSensor.get_proximity();
+    return (proximity > 200);
+}
 
-        } else if (intakeMode == 2) { // ĐANG NHẢ ngc
-            motorPhai.move(-speed);
-            motorTrai.move(-speed);
+void reverseMotorsForDuration(int duration_ms) {
+    int speed = 127;
+    intake.move(-speed);
+    conveyor.move(-speed);
+    outtake.move(-speed);
 
-        } else { // STOP
-            motorPhai.move(0);
-            motorTrai.move(0);
-        }
-
-        pros::delay(20);
+    int delay_count = duration_ms / 25; 
+    for (int i = 0; i < delay_count; i++) {
+        pros::delay(25);
     }
 }
 
-pros::Task intakeTask(intakeTaskFn); // Declare once
+// ========== TASKS ==========
+void intakeTaskFn() { 
+    static bool r1Toggle = false;  // R1 toggle state
+    static bool lastR1State = false;
+    static uint32_t lastR2HoldTime = 0;
+    while (true) {
+        int speed = 127;
+        
+        bool r2Held = false;
+        bool yHeld = false;
+        bool l2Held = false;
+        bool xHeld = false;
+        
+        if (!pros::competition::is_autonomous()) {
+            bool r1Current = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+            r2Held = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+            yHeld = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+            l2Held = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+            xHeld = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+            
+            // R1: toggle on press (edge detection)
+            if (r1Current && !lastR1State) {
+                r1Toggle = !r1Toggle;
+            }
+            lastR1State = r1Current;
+        }
+        
+        if (!pros::competition::is_autonomous()) {
+            // Cancel R1 toggle if other intake buttons are pressed
+            if (r2Held || yHeld || l2Held) {
+                r1Toggle = false;
+            }
 
+            // L2 hold: reverse all motors (highest priority, swapped from Y)
+            if (l2Held) {
+                intake.move(-speed);
+                conveyor.move(-speed);
+                outtake.move(-speed);
+            }
+            // R2 hold or Y hold: spin all 3 motors (Y swapped with L1)
+            else if (r2Held) {
+                intake.move(speed);
+                conveyor.move(speed);
+                outtake.move(speed);
+            }
+            else if (yHeld) {
+                intake.move(speed);
+                conveyor.move(speed);
+                outtake.move(50);
+            }
+            // R1 toggled on: spin intake and conveyor only
+            else if (r1Toggle) {
+                intake.move(speed);
+                conveyor.move(speed);
+                // outtake.move(0);
+            }
+            // Nothing active: stop all
+            else {
+                intake.move(0);
+                conveyor.move(0);
+                outtake.move(0);
+            }
+            
+            // Any intake button clears manual override
+            if (yHeld || r2Held || xHeld || r1Toggle) {
+                manualPneumaticOverride = false;
+            }
+
+            if (yHeld) {
+                stage.set_value(false);
+                blockblock.set_value(false);
+            } else if (r2Held) {
+                stage.set_value(true);
+                blockblock.set_value(true);
+                lastR2HoldTime = pros::millis();
+            } else if (lastR2HoldTime > 0 && (pros::millis() - lastR2HoldTime < 500)) {
+                blockblock.set_value(true);
+            } else if (xHeld) {
+                blockblock.set_value(false);
+            } else if (r1Toggle) {
+                blockblock.set_value(false);
+                stage.set_value(true);
+            } else if (!manualPneumaticOverride) {
+                // Auto-return to defaults when no intake buttons active
+                blockblock.set_value(false);
+                stage.set_value(true);
+            }
+        } else {
+            // Autonomous mode: use intakeMode
+            if (intakeMode == 0) {
+                intake.move(0);
+                conveyor.move(0);
+                outtake.move(0);
+            } else if (intakeMode == 1) {
+                // Intake + conveyor
+                intake.move(intakeSpeed);
+                conveyor.move(intakeSpeed);
+                outtake.move(0);
+                blockblock.set_value(false);
+            } else if (intakeMode == 2) {
+                // All 3 motors
+                intake.move(intakeSpeed);
+                conveyor.move(intakeSpeed);
+                outtake.move(intakeSpeed);
+                blockblock.set_value(true);
+                stage.set_value(true);
+            } else if (intakeMode == 3) {
+                intake.move(intakeSpeed);
+                conveyor.move(intakeSpeed);
+                outtake.move(85);
+                blockblock.set_value(false);
+                stage.set_value(false);
+            } else if (intakeMode == 4) {
+                // Reverse all
+                intake.move(-80);
+                conveyor.move(-intakeSpeed);
+                outtake.move(-intakeSpeed);
+            }
+        }
+        
+        pros::delay(25);
+    }
+}
+
+// intakeTask started in opcontrol() to avoid global constructor race condition
 
 void handleDrive() {
     // Đọc input từ controller
     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-    
-    // Deadzone để tránh drift nhỏ - deadzone nhỏ hơn cho turn để turn nhạy hơn
+
     const int forwardDeadzone = 5;
-    const int turnDeadzone = 5; // Deadzone nhỏ hơn cho turn
+    const int turnDeadzone = 5; 
     if (abs(leftY) < forwardDeadzone) leftY = 0;
     if (abs(rightX) < turnDeadzone) rightX = 0;
+    // if (isSkillMode && boostMode) {
+    //     leftY = (int)(leftY * 81.0 / 127.0);
+    //     rightX = (int)(rightX * 81.0 / 127.0);
+    // }
     
-    // Skill mode + boost mode: giảm tốc độ drivetrain xuống 75%
-    if (isSkillMode && boostMode) {
-        leftY = (int)(leftY * 0.65);
-        rightX = (int)(rightX * 0.65);
-    }
-    
-    // Arcade drive với desaturateBias để điều chỉnh throttle/turn priority khi saturation
-    // desaturateBias = 0.35: ưu tiên throttle hơn turn (0 = throttle priority, 1 = turn priority)
-    // Giá trị thấp hơn (0.3-0.4) sẽ làm turn chậm hơn khi max throttle forward
-    chassis.arcade(leftY, rightX, false, 0.35);
-    
-    // Hoặc dùng curvature drive (không có desaturateBias):
-    // chassis.curvature(leftY, rightX);
-
-}
-
-void setStage(int stageMode) {
-    // stageMode: 0 = center goal + descorecenter xuong (stage trên extend, descorecenter xuống)
-    //            1 = long goal (cả stage trên và dưới thu lại - stage = false, descorecenter = false)
-    //            2 = blockblock + descorecenter len (stage dưới extend, descorecenter lên)
-    //            3 = blockblock + descorecenter xuong (stage trên extend, descorecenter lên)
-    
-    currentStageMode = stageMode; // Lưu stage mode hiện tại để intake task có thể sử dụng
-    
-    if (stageMode == 0) {
-        // center goal + descorecenter xuong
-        // stage trên extend (A = true), descorecenter xuống (B = false)
-        stageState = true;
-        descoreCenterState = false;
-        stage.set_value(true);
-        descoreCenter.set_value(false);
-        
-    } else if (stageMode == 1) {
-        // long goal - cả stage trên và dưới thu lại
-        // stage dưới extend/trên unextend (A = false), descorecenter thu lại (B = false)
-        stageState = false;
-        descoreCenterState = false;
-        stage.set_value(false);
-        descoreCenter.set_value(false);
-    } else if (stageMode == 2) {
-        // blockblock + descorecenter len
-        // stage dưới extend (A = false), descorecenter lên (B = true)
-        stageState = false;
-        descoreCenterState = true;
-        stage.set_value(false);
-        descoreCenter.set_value(true);
-    } else if (stageMode == 3) {
-        // blockblock + descorecenter xuong
-        // stage trên extend (A = true), descorecenter lên (B = true) - KHÁC với mode 0
-        stageState = true;
-        descoreCenterState = true;
-        stage.set_value(true);
-        descoreCenter.set_value(true);
-    }
+    // chassis.arcade(leftY, rightX, false, 0.15);
+    chassis.curvature(leftY, rightX);
 }
 
 void handleManualPneumatics() {
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
-        odoLiftState = !odoLiftState;  
-        odoLift.set_value(odoLiftState); 
+    // L1: toggle both left and right descore
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+        descoreLeftState = !descoreLeftState;
+        descoreLeft.set_value(descoreLeftState);
+        descoreRightState = !descoreRightState;
+        descoreRight.set_value(descoreRightState);
+    }
+    
+    // TOGGLE descore left and right independently by UP AND LEFT
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+        descoreLeftState = !descoreLeftState;
+        descoreLeft.set_value(descoreLeftState);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        descoreRightState = !descoreRightState;
+        descoreRight.set_value(descoreRightState);
     }
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-        gripperState = !gripperState;  
-        gripper.set_value(gripperState); 
-    }
-
+    // B: set stage false and blockblock false, prevent auto-return
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-        doubleParkState = !doubleParkState;  
-        doublePark.set_value(doubleParkState);  
+        stage.set_value(false);
+        blockblock.set_value(false);
+        manualPneumaticOverride = true;
     }
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+    // Y is now used for motor reverse (hold) in intakeTaskFn
+
+    // RIGHT: toggle counter loader
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
         counterLoaderState = !counterLoaderState;
         counterLoader.set_value(counterLoaderState);
     }
 
-    // R2: Skill mode = boost toggle, Match mode = descore toggle
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-        if (isSkillMode) {
-            // Skill mode: toggle boost
-            boostMode = !boostMode;
-            // Rumble khi toggle boost mode
-            controller.rumble(".");
-        } else {
-            // Match mode: toggle descore
-            descoreLeftState = !descoreLeftState;
-            descoreLeft.set_value(descoreLeftState);
-        }
-    }
-    
-    // --- Stage and DescoreCenter controls ---
-    // Mỗi nút một chức năng riêng:
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-        // blockblock + descorecenter len (stage dưới extend, descorecenter lên)
-        setStage(2);
-    }
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-        // blockblock + descorecenter xuong (stage trên extend, descorecenter xuống)
-        setStage(3);
-    }
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-        // long goal (cả stage trên và dưới thu lại)
-        setStage(1);
-    }
+    // DOWN: toggle odo lift
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-        // center goal + descorecenter xuong (stage trên extend, descorecenter xuống)
-        setStage(0);
+        odoLiftState = !odoLiftState;
+        odoLift.set_value(odoLiftState);
     }
 
 }
 
-// ========== AUTON =========
-
-// void right_wp();
-// void right_elim();
-// void right_solo_wp();
-
-// void left_wp();
-// void left_elim();
-// void left_solo_wp();
-
-// void autoSkill();
-
-
-// ========= LEFT DESCORERE 7 BLOCK =========
-ASSET(pathdescore1_txt);
-ASSET(pathdescore2_txt);
-ASSET(pathdescore3_txt);
-void leftdescore7bloc() {
-    setStage(3); 
-    // chassis.setPose(60.895, -17.116, 270);
-    intakeMode = 1;
-    chassis.setPose(48.411, -10.375, 247.334);
-    chassis.moveToPoint(25.364, -20, 700, {}, true); // t 700 | y 23
-    pros::delay(500);
-    counterLoader.set_value(true);
-    chassis.turnToHeading(135, 650, {}, false);
-    chassis.moveToPoint(41.5, -45.5, 800, {}, false);
-    chassis.turnToHeading(90, 250, {}, true);
-    // chassis.moveToPose(54, -47, 90, 1000, {}, false);
-    // pros::delay(300);
-    // chassis.moveToPose(60, -48, 90, 1300, {}, false); // t 2000
-    chassis.moveToPoint(58, -49, 1000, {}, false);
-    // chassis.waitUntilDone();
-    pros::delay(400);
-    intakeMode = 0;
-    chassis.moveToPoint(23, -47.75, 2300, {.forwards = false, .minSpeed = 90}); // xam l
-    pros::delay(600);
-    intakeMode = 2;
-    pros::delay(150);
-    setStage(2);
-    // pros::delay(200);
-    intakeMode = 1;
-    pros::delay(1900);
-    intakeMode = 0;
-
-    chassis.setPose(29.5, -47.15, 90);
-
-    // chassis.moveToPose(40, -47.5, 91, 2000, {}, false); 
-    // chassis.moveToPoint((chassis.getPose().x - 5), chassis`.getPose().y, 1800, {}, false);
-    // chassis.moveToPoint(38.5, -47.15, 1500, {}, false);
-    // chassis.turnToHeading(0, 900, {}, false);
-    // chassis.moveToPoint(38.5, -58.5, 1700, {.forwards = false}, false); 
-    // chassis.turnToHeading(90, 900, {}, false);
-    // chassis.moveToPoint(30, -58.5, 1700, {.forwards = false}, false); 
-    
-    // --------------------------------------------------------
-    chassis.moveToPoint(40, -47.15, 800, {}, false); // x 49
-    // chassis.turnToHeading(235, 700); // MAGIC
-    chassis.turnToHeading(35, 500, {}, false);
-
-    // // chassis.follow(pathdescore1_txt, 9, 1500, false, true);
-    chassis.follow(pathdescore2_txt, 9, 3000, false, true);
-    // chassis.follow(pathdescore3_txt, 9, 2000, false, true);
-
-    // chassis.moveToPoint(38, -59.5, 1000, {.forwards = false}, false);
-    pros::delay(1000);
-    descoreLeft.set_value(false);
-    // --------------------------------------------------------
-    
-    pros::delay(2000);
-    chassis.moveToPoint((chassis.getPose().x), chassis.getPose().y, 6000, {}, false);
-}
-
-
-void leftfastdescore() {
-    setStage(3); 
-    // chassis.setPose(60.895, -17.116, 270);
-    intakeMode = 1;
-    chassis.setPose(48.411, -10.375, 247.334);
-    chassis.moveToPoint(25.364, -20, 700, {}, true); // t 700 | y 23
-    pros::delay(500);
-    counterLoader.set_value(true);
-    chassis.turnToHeading(135, 650, {}, false);
-    chassis.moveToPoint(41.5, -45.5, 800, {}, false);
-    chassis.turnToHeading(90, 250, {}, true);
-    // chassis.moveToPose(54, -47, 90, 1000, {}, false);
-    // pros::delay(300);
-    // chassis.moveToPose(60, -48, 90, 1300, {}, false); // t 2000
-    // chassis.moveToPoint(67, -49, 1000, {}, false);
-    // // chassis.waitUntilDone();
-    // pros::delay(400);
-    // intakeMode = 0;
-    chassis.moveToPoint(23, -47.75, 2300, {.forwards = false, .minSpeed = 90}); // xam l
-    pros::delay(600);
-    // intakeMode = 2;
-    pros::delay(150);
-    setStage(2);
-    // pros::delay(200);
-    intakeMode = 1;
-    // pros::delay(1900);
-    // intakeMode = 0;
-
-    chassis.setPose(29.5, -47.15, 90);
-
-    // chassis.moveToPose(40, -47.5, 91, 2000, {}, false); 
-    // chassis.moveToPoint((chassis.getPose().x - 5), chassis`.getPose().y, 1800, {}, false);
-    // chassis.moveToPoint(38.5, -47.15, 1500, {}, false);
-    // chassis.turnToHeading(0, 900, {}, false);
-    // chassis.moveToPoint(38.5, -58.5, 1700, {.forwards = false}, false); 
-    // chassis.turnToHeading(90, 900, {}, false);
-    // chassis.moveToPoint(30, -58.5, 1700, {.forwards = false}, false); 
-    
-    // --------------------------------------------------------
-    chassis.moveToPoint(40, -47.15, 800, {}, false); // x 49
-    // chassis.turnToHeading(235, 700); // MAGIC
-    chassis.turnToHeading(35, 500, {}, false);
-
-    // // chassis.follow(pathdescore1_txt, 9, 1500, false, true);
-    chassis.follow(pathdescore2_txt, 9, 3000, false, true);
-    // chassis.follow(pathdescore3_txt, 9, 2000, false, true);
-
-    // chassis.moveToPoint(38, -59.5, 1000, {.forwards = false}, false);
-    pros::delay(1000);
-    descoreLeft.set_value(false);
-    // --------------------------------------------------------
-    
-    pros::delay(2000);
-    chassis.moveToPoint((chassis.getPose().x), chassis.getPose().y, 6000, {}, false);
-}
-
-// ========= LEFT CENTER DESCORERE =========
-void leftcenterdescore() {
-    setStage(3); 
-    // chassis.setPose(60.895, -17.116, 270);
-    intakeMode = 1;
-    chassis.setPose(48.411, -10.375, 247.334);
-    chassis.moveToPoint(18.411, -25, 1400, {}, true); // t 700 | y 23
-    // chassis.moveToPose(25.364, -20, 1500, {}, true); // t 700 | y 23
-    pros::delay(500);
-    counterLoader.set_value(true);
-    // // chassis.turnToHeading(135, 650, {}, false);
-    pros::delay(600);
-    counterLoader.set_value(false);
-
-    // --------------------------------------------------------
-    chassis.moveToPose(7, -43, 206, 1600, {}, false);
-    chassis.moveToPoint(21, -21, 1200, {.forwards = false}, true);
-    intakeMode = 0;
-    setStage(0);
-    chassis.moveToPose(7, -7.5, 135, 2000, {.forwards = false, .minSpeed = 90}, false);
-    intakeMode = 1;
-    pros::delay(1600);
-
-    // --------------------------------------------------------
-    pros::Task intakeSequenceTask([&]() {
-        counterLoader.set_value(true);
-        intakeMode = 2;
-        pros::delay(200);
-        setStage(3);
-        pros::delay(250);
-        intakeMode = 1;
-    });
-    
-    // --------------------------------------------------------
-
-
-    chassis.turnToHeading(135, 650, {}, false);
-    chassis.moveToPoint(45, -45.5, 1000, {}, false);
-    chassis.turnToHeading(90, 500, {}, false);
-    // chassis.moveToPose(54, -47, 90, 1000, {}, false);
-    // pros::delay(300);
-    // chassis.moveToPose(60, -48, 90, 1300, {}, false); // t 2000
-    chassis.moveToPoint(58, -47.5, 1200, {.maxSpeed = 70}, false);
-    // chassis.waitUntilDone();
-    pros::delay(400);
-    intakeMode = 0;
-    chassis.moveToPoint(23, -47.75, 2300, {.forwards = false, .minSpeed = 90}); // xam l
-    pros::delay(600);
-    intakeMode = 2;
-    pros::delay(150);
-    setStage(2);
-    // pros::delay(200);
-    intakeMode = 1;
-    pros::delay(1900);
-    intakeMode = 0;
-
-    chassis.setPose(29, -47.15, 90);
-
-    // chassis.moveToPose(40, -47.5, 91, 2000, {}, false); 
-    // chassis.moveToPoint((chassis.getPose().x - 5), chassis`.getPose().y, 1800, {}, false);
-    // chassis.moveToPoint(38.5, -47.15, 1500, {}, false);
-    // chassis.turnToHeading(0, 900, {}, false);
-    // chassis.moveToPoint(38.5, -58.5, 1700, {.forwards = false}, false); 
-    // chassis.turnToHeading(90, 900, {}, false);
-    // chassis.moveToPoint(30, -58.5, 1700, {.forwards = false}, false); 
-    
-    // --------------------------------------------------------
-    // chassis.moveToPoint(40, -47.15, 800, {}, false); // x 49
-    // chassis.turnToHeading(235, 700); // MAGIC
-    // chassis.turnToHeading(35, 500, {}, false);
-
-    // // chassis.follow(pathdescore1_txt, 9, 1500, false, true);
-    // chassis.follow(pathdescore2_txt, 9, 3000, false, true);
-    // chassis.follow(pathdescore3_txt, 9, 2000, false, true);
-
-    // chassis.moveToPoint(38, -59.5, 1000, {.forwards = false}, false);
-    // pros::delay(950);
-    // descoreLeft.set_value(false);
-    // --------------------------------------------------------
-
-    // pros::delay(1900);
-    // chassis.moveToPoint((chassis.getPose().x), chassis.getPose().y, 4000, {}, false);
-}
-
-// ========= RIGHT DESCORERE 7 BLOCK =========
-ASSET(pathdescoreright_txt);
-ASSET(pathdescorecbd_txt);
-void rightdescore7bloc() {
-    setStage(3); 
-    // chassis.setPose(60.895, -17.116, 270);
-    intakeMode = 1;
-    chassis.setPose(48.411, 10.375, 292.667);
-    chassis.moveToPoint(25.364, 20, 700, {}, true); // t 700 | y 23
-    pros::delay(500);
-    counterLoader.set_value(true);
-    chassis.turnToHeading(35, 650, {}, false);
-    chassis.moveToPoint(41.5, 45.5, 800, {}, false);
-    chassis.turnToHeading(90, 250, {}, true);
-    // chassis.moveToPose(54, -47, 90, 1000, {}, false);
-    // pros::delay(300);
-    // chassis.moveToPose(60, -48, 90, 1300, {}, false); // t 2000
-    chassis.moveToPoint(57, 48, 1100, {}, false);
-    // chassis.waitUntilDone();
-    pros::delay(400);
-    intakeMode = 0;
-    chassis.moveToPoint(23, 47.75, 2300, {.forwards = false, .minSpeed = 90});
-    pros::delay(600);
-    intakeMode = 2;
-    pros::delay(150);
-    setStage(2);
-    // pros::delay(200);
-    intakeMode = 1;
-    pros::delay(1900);
-    intakeMode = 0;
-
-    chassis.setPose(29.5, 47.15, 90);
-    
-    chassis.moveToPoint(40, 47.15, 800, {}, false); // x 49
-    // chassis.turnToHeading(235, 700); // MAGIC
-    chassis.turnToHeading(40, 500, {}, false);
-    // chassis.follow(pathdescorecbd_txt, 9, 3000, false, true);
-    chassis.moveToPoint(30, 35.5, 1000, {.forwards = false}, false); // x 49
-    chassis.turnToHeading(90, 400, {}, true);
-    descoreLeft.set_value(false);
-    chassis.moveToPoint(12, 35.5, 1000, {.forwards = false}, false); // x 49
-    // // chassis.follow(pathdescore1_txt, 9, 1500, false, true);
-    // chassis.follow(pathdescoreright_txt, 9, 3000, false, true);
-    // chassis.follow(pathdescore3_txt, 9, 2000, false, true);
-
-    // chassis.moveToPoint(38, -59.5, 1000, {.forwards = false}, false);
-    // pros::delay(1000);
-    // descoreLeft.set_value(false);
-    // --------------------------------------------------------
-    
-    // pros::delay(2000);
-    chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000, {}, false);
-
-}
-
-void skillissue() {
-    setStage(3); 
-    chassis.setPose(-62.2, -17.6, 0); 
-    intakeMode = 1;
-
-    // code chay qua park 
-    // ------------------------------------------------------------------------------
-    int driveSpeed = 70; 
+// Telemetry update task for autonomous
+void telemetryTaskFn(void* param) {
     while (true) {
-        int distance = distance_sensor.get();
-        if (distance >= 2105 && distance > 0) {
-            break; 
+        if (!disableBrainScreen) {
+            auton_selector.update_telemetry();
+            lv_timer_handler();
         }
-        chassis.tank(driveSpeed, driveSpeed, true); 
-        pros::delay(20);
+        pros::delay(100);
     }
-    chassis.tank(0, 0, true);
-    chassis.setPose(-62.2, 17.6, 0);
-    // ------------------------------------------------------------------------------
-
-
 }
-
-void testodo11() {
-    // chassis.setPose(48.411, -10.375, 247.334);
-    // chassis.setPose(45.5, 0, 270);
-    // chassis.setPose(0, 0, 270);
-    // chassis.moveToPose(0, 10, 270, 4000);
-    // chassis.turnToHeading(215, 700);
-    // pros::delay(10000);
-    // chassis.turnToHeading(90, 700);
-    chassis.setPose(0, 0, 270);
-    chassis.moveToPoint((chassis.getPose().x), chassis.getPose().y, 15000, {}, false);
-}
-
 
 void autonomous() {
+    if (!disableBrainScreen) {
+        auton_selector.show_telemetry();
+        pros::Task telemetryTask(telemetryTaskFn, nullptr, "TelemetryTask");
+    }
+   
+
+    // isSkillMode = (auton_selector.get_selected_name() == "Skillz");
+
+    if (manualAutonFunction != nullptr) {
+        manualAutonFunction();
+    } else {
+        auton_selector.run_auton();
+    }
     // chassis.setPose(0, 0, 0);
     // chassis.turnToHeading(90, 100000);
-    // chassis.moveToPoint(0, 10, 5000);
-    leftdescore7bloc();
-    // leftfastdescore();
-    // leftcenterdescore();
-    // rightdescore7bloc();
-    // testodo11();
+    // chassis.moveToPoint(0, 24, 10000);
+
+
+// chassis.setPose(-46.5, 0, 90.0);
+
+// chassis.swingToPoint(24.0, -24.0, DriveSide::LEFT, 647, {.direction = AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 40, .earlyExitRange = 2.85}, false);
+// chassis.moveToPoint(-24.0, 24.0, 1900, {}, false);
+// // ml_mech.set_value(true);
+// // blockblock.set_value(true);
+// intake.move(127);
+// conveyor.move(127);
+// chassis.turnToPoint(-42.0, 48.0, 790, {}, false);
+// chassis.moveToPoint(-42.0, 48.0, 1320, {}, false);
+// chassis.turnToPoint(-57.84, 48.0, 652, {}, false);
+// chassis.moveToPoint(-57.84, 48.0, 928, {}, false);
+// pros::delay(700);
+// chassis.moveToPoint(-36.0, 48.0, 1095, {.forwards = false}, false);
+// blockblock.set_value(true);
+// intake.move(127);
+// conveyor.move(127);
+// outtake.move(127);
+    // chassis.setPose(0, 0, 0);
+    // chassis.moveToPoint(0, 24, 10000);
+    // chassis.turnToHeading(90, 10000);
+    
 }
 
 void initialize() {
-    pros::lcd::initialize(); // initialize brain screen
-    // pros::delay(500); // give time for sensors to boot
     chassis.calibrate();
-    // chassis.setPose(45.5,0,270);
-    // colorSensor.set_integration_time(25);
     // colorSensor.set_led_pwm(100);
-    // pros::Task sorter(colorSortTask);
 
-    pros::Task screen_task([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %.2f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %.2f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %.2f", chassis.getPose().theta); // heading from odometry
-            pros::lcd::print(7, "IMU: %.2f", imu.get_heading()); // IMU heading directly
-            
-            // Battery stage
-            double batteryLevel = pros::battery::get_capacity();
-            pros::lcd::print(3, "Battery: %.1f%%", batteryLevel);
-            
-            // Motor temperatures - lấy nhiệt độ từ các motor đại diện
-            pros::Motor tempMotor1(3); // Motor từ leftMotors (port 3)
-            pros::Motor tempMotor2(7); // Motor từ rightMotors (port 7)
-            double tempLeft = tempMotor1.get_temperature();
-            double tempRight = tempMotor2.get_temperature();
-            double tempAbove = motorTrai.get_temperature();
-            double tempUnder = motorPhai.get_temperature();
-            
-            // Hiển thị nhiệt độ motor
-            pros::lcd::print(4, "Motor L: %.1fC R: %.1fC", tempLeft, tempRight);
-            pros::lcd::print(5, "Motor Up: %.1fC Dn: %.1fC", tempAbove, tempUnder);
-            
-            // Tìm nhiệt độ cao nhất để cảnh báo
-            double maxTemp = std::max({tempLeft, tempRight, tempAbove, tempUnder});
-            if (maxTemp > 50) {
-                pros::lcd::print(6, "WARNING: Max %.1fC!", maxTemp);
-            } else {
-                pros::lcd::print(6, "Max Temp: %.1fC", maxTemp);
-            }
-            
-            pros::delay(200); // Refresh every 2 seconds
-        }
-    });
+    auton_selector.initialize();
 
-    // controller.clear();
-    // controller.set_text(0, 0, "AUTON SELECT");
+    // Start intake task early so it runs during both autonomous and opcontrol
+    pros::Task intakeTask(intakeTaskFn);
 
-    // while (pros::competition::is_disabled()) {
-    //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-    //         current_auton = (current_auton == 0 ? 6 : current_auton - 1);
-    //     }
-    //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-    //         current_auton = (current_auton == 6 ? 0 : current_auton + 1);
-    //     }
-
-    //     controller.set_text(1, 0, autonNames[current_auton]);
-    //     pros::delay(120);
-    // }
+    // chassis.setPose(45, 0, 270);
+    // startMCL(chassis); // MCL disabled to save resources
 }
 
 
+// // Skill mode opcontrol: chạy từng chu trình, DOWN = ngắt
+// static bool skillRunning = false;
+// static pros::Task* skillTask = nullptr;
+// static void skillTaskFnAll(void*) {
+//     odoLift.set_value(false);
+//     pros::delay(50);
+//     chutrinhtrai();
+//     quapark2();
+//     chutrinhphai();
+//     skillRunning = false;
+// }
+// static void skillTaskFnQuapark2(void*) {
+//     odoLift.set_value(false);
+//     pros::delay(50);
+//     resetposeskillxNorth(1);
+//     resetposeskilly(1);
+//     quapark2();
+//     skillRunning = false;
+// }
+// static void skillTaskFnChutrinhphai(void*) {
+//     // chassis.setPose(-29.5, -47.25, chassis.getPose().theta);
+//     // resetposeskilly(-1);
+//     resetposeskillxNorth(-1);
+//     resetposeskilly(-1);
+//     pros::delay(50);
+//     odoLift.set_value(false);
+//     chutrinhphai();
+//     skillRunning = false;
+// }
+// static void skillAbort() {
+//     intakeMode = 0;
+//     odoLift.set_value(true);
+//     chassis.cancelMotion();
+//     if (skillTask != nullptr) {
+//         skillTask->remove();
+//         skillTask = nullptr;
+//     }
+//     skillRunning = false;
+// }
+// static void skillStartAll() {
+//     skillRunning = true;
+//     skillTask = new pros::Task(skillTaskFnAll, nullptr, "skill_all");
+// }
+// static void skillStartQuapark2() {
+//     skillRunning = true;
+//     skillTask = new pros::Task(skillTaskFnQuapark2, nullptr, "skill_qp2");
+// }
+// static void skillStartChutrinhphai() {
+//     skillRunning = true;
+//     skillTask = new pros::Task(skillTaskFnChutrinhphai, nullptr, "skill_ctp");
+// }
 
 // ========== OP CONTROL ==========
-void opcontrol() {
-    // Đảm bảo đèn cảm biến bật
-    // colorSensor.set_led_pwm(100);
-    // chassis.setPose(60.895, -17.116, 270);
-    // Set IMU heading để đồng bộ với pose
-    // imu.set_heading(270);
-    // pros::delay(50); // Delay nhỏ để IMU cập nhật
+void opcontrol() {   
 
-    int displayCounter = 0; // Counter để update controller display không quá nhanh
+    // chassis.setPose(45.4, 0, 270.0);
+    odoLift.set_value(false);
+
+    if (!disableBrainScreen) {
+        auton_selector.show_telemetry();
+    }
+    intakeMode = 0;
+    
+    int telemetryCounter = 0;
+    int controllerDisplayCounter = 0;
 
     while (true) {
-        handleDrive();
-        handleManualPneumatics();
-
-        // --- Intake toggle (L1 = hút, L2 = nhả) ---
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
-            if (intakeMode == 1) {
-                intakeMode = 0; // Đang hút -> Tắt
-            } else {
-                intakeMode = 1; // Đang tắt/nhả -> Bật hút
-            }
-        }
-
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-            if (intakeMode == 2) {
-                intakeMode = 0; // Đang nhả -> Tắt
-            } else {
-                intakeMode = 2; // Đang tắt/hút -> Bật nhả
-            }
-        }
+        // if (isSkillMode) {
+        //     // UP = chạy skill (cả 3 chu trình)
+        //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP) && !skillRunning) {
+        //         skillStartAll();
+        //     }
+        //     // DOWN = chỉ ngắt chu trình đang chạy
+        //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN) && skillRunning) {
+        //         skillAbort();
+        //     }
+        //     // LEFT = chạy quapark2
+        //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT) && !skillRunning) {
+        //         skillStartQuapark2();
+        //     }
+        //     // RIGHT = chạy chutrinhphai
+        //     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT) && !skillRunning) {
+        //         skillStartChutrinhphai();
+        //     }
+        // }
         
-        // Update controller display mỗi 100ms (mỗi 4 lần loop với delay 25ms)
-        // Controller text update rate chậm, không nên update quá nhanh
-        if (displayCounter % 4 == 0) {
-            if (isSkillMode) {
-                // Skill mode: hiển thị boost mode status
-                if (boostMode) {
-                    controller.print(0, 0, "BOOST: ON");
-                } else {
-                    controller.print(0, 0, "BOOST: OFF");
-                }
-            } else {
-                // Match mode: clear hoặc hiển thị mode
-                controller.print(0, 0, "MATCH MODE");
-            }
+        // Handle manual pneumatics and drive
+        handleManualPneumatics();
+        handleDrive();
+        
+        // Update telemetry periodically (every 4 loops = ~100ms at 25ms delay)
+        if (!disableBrainScreen && telemetryCounter % 4 == 0) {
+            auton_selector.update_telemetry();
+            lv_timer_handler();
         }
-        displayCounter++;
+        telemetryCounter++;
+        
+        // Update controller display periodically (every 20 loops = ~500ms)
+        // Controller serial is slow, reducing frequency saves CPU
+        if (controllerDisplayCounter % 20 == 0) {
+            lemlib::Pose pose = chassis.getPose();
+            controller.print(0, 0, "X:%.1f Y:%.1f", pose.x, pose.y);
+        }
+        controllerDisplayCounter++;
         
         pros::delay(25);
     }
 }
+
+// void opcontrol() {   
+    
+//     manualAutonFunction();
+    
+    
+// }

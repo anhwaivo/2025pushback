@@ -1,4 +1,7 @@
 ################################################################################
+# Fix for /bin/sh crash due to PROS injecting LD_LIBRARY_PATH
+export LD_LIBRARY_PATH:=
+
 ######################### User configurable parameters #########################
 # filename extensions
 CEXTS:=c

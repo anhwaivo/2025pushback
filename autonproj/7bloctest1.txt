@@ -1,0 +1,22 @@
+/* CODEGEN EXPORT: LemLib */
+
+chassis.setPose(-42.912799, 2.31346, 90.0);
+
+chassis.swingToPoint(24.0, -24.0, DriveSide::LEFT, 647, {.direction = AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 40, .earlyExitRange = 2.85}, false);
+chassis.moveToPoint(-24.0, 24.0, 1551, {}, false);
+ml_mech.set_value(true);
+blockblock.set_value(true);
+intake.move(127);
+conveyor.move(127);
+chassis.turnToPoint(-42.0, 48.0, 790, {}, false);
+chassis.moveToPoint(-42.0, 48.0, 1320, {}, false);
+chassis.turnToPoint(-57.84, 48.0, 652, {}, false);
+chassis.moveToPoint(-57.84, 48.0, 928, {}, false);
+pros::delay(700);
+chassis.moveToPoint(-36.0, 48.0, 1095, {.forwards = false}, false);
+blockblock.set_value(true);
+intake.move(127);
+conveyor.move(127);
+outtake.move(127);
+
+// Estimated total time: 4.37 s

@@ -1,0 +1,120 @@
+{
+    "initial": {
+        "position": [
+            300,
+            300
+        ],
+        "heading": 90.0
+    },
+    "nodes": [
+        {
+            "pos": [
+                300,
+                500
+            ],
+            "reverse": false,
+            "actions": [],
+            "actions_out": [],
+            "path_to_next": {}
+        },
+        {
+            "pos": [
+                200,
+                400
+            ],
+            "path_to_next": {},
+            "reverse": false,
+            "actions": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ],
+            "actions_out": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ],
+            "turn_mode": "turn",
+            "swing_dir": "auto",
+            "move_to_pose": false
+        },
+        {
+            "pos": [
+                100,
+                475
+            ],
+            "turn_mode": "turn",
+            "swing_dir": "auto",
+            "move_to_pose": false,
+            "path_to_next": {},
+            "reverse": false,
+            "actions": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ],
+            "actions_out": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ]
+        },
+        {
+            "pos": [
+                100,
+                541
+            ],
+            "reverse": false,
+            "actions": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ],
+            "actions_out": [
+                {
+                    "type": "preset",
+                    "name": "reshape",
+                    "state": "on",
+                    "value": null,
+                    "values": []
+                }
+            ],
+            "turn_mode": "turn",
+            "swing_dir": "auto",
+            "move_to_pose": false,
+            "path_to_next": {}
+        },
+        {
+            "pos": [
+                100,
+                450
+            ],
+            "reverse": false,
+            "actions": [],
+            "actions_out": [],
+            "turn_mode": "turn",
+            "swing_dir": "auto",
+            "move_to_pose": false
+        }
+    ]
+}
