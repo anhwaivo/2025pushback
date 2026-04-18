@@ -102,7 +102,7 @@ AutonSelector auton_selector;
 // - &pidTuneTurn
 // - &pidTuneVelocity
 // - &awp
-AutonSelector::routine_action_t manualAutonFunction = &rightdescore7bloc; // nullptr = use selector, or set to function pointer
+AutonSelector::routine_action_t manualAutonFunction = &leftdescore7bloc; // nullptr = use selector, or set to function pointer
 
 void disabled() {
     // Update selector while disabled
