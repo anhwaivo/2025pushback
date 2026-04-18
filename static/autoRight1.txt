@@ -1,0 +1,35 @@
+9.214, 42.81, 89.158
+9.59, 40.846, 86.263
+10.107, 38.915, 83.267
+10.805, 37.042, 80.161
+11.737, 35.275, 76.931
+12.962, 33.698, 73.561
+14.494, 32.422, 71.106
+16.286, 31.547, 73.286
+18.23, 31.095, 80.313
+20.226, 31.016, 85.235
+22.215, 31.213, 89.283
+24.17, 31.632, 90.916
+26.087, 32.2, 90.574
+27.962, 32.896, 87.725
+29.801, 33.681, 84.781
+31.606, 34.541, 81.731
+33.38, 35.465, 78.561
+35.125, 36.442, 75.259
+36.844, 37.464, 71.805
+38.54, 38.524, 68.176
+40.215, 39.616, 64.342
+41.872, 40.736, 60.266
+43.513, 41.879, 55.893
+45.14, 43.043, 51.147
+46.747, 44.233, 45.913
+48.342, 45.439, 40
+50.517, 47.117, 0
+50.517, 47.117, 0
+66.353, 59.332, 0
+endData
+127
+100
+200
+9.214, 42.81, 11.182, 30.494, 18.909, 22.299, 50.517, 47.117
+#PATH.JERRYIO-DATA {"appVersion":"0.10.0","format":"LemLib v0.5","gc":{"robotWidth":16,"robotHeight":17.5,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2026 - Push Back","signature":"V5RC-PushBack-H2H-TopDownHighlighted-TileColor66_71","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"JWyd0AAD16","x":9.214,"y":42.81,"lock":false,"visible":true,"heading":354.08,"__type":"end-point"},{"uid":"3AnucUkkhj","x":11.182249556350579,"y":30.493638656178806,"lock":false,"visible":true,"__type":"control"},{"uid":"mRHLGEA46t","x":18.908678269909394,"y":22.298941535737637,"lock":false,"visible":true,"__type":"control"},{"uid":"1dqwizVTz5","x":50.517,"y":47.117,"lock":false,"visible":true,"heading":270.5912670898436,"__type":"end-point"}],"speedProfiles":[{"uid":"Df0q0mocp6","xPos":0.9615384615384616,"yPos":0.7051926298157454,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"xR5b7eblsp"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":40,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"NlWdYEIpHZ","lock":false,"visible":true}]}

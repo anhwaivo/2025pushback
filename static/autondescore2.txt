@@ -1,0 +1,45 @@
+60.895, -17.116, 99.052
+58.901, -17.276, 98.9
+56.907, -17.43, 97.8
+54.912, -17.57, 96.701
+52.916, -17.697, 95.601
+50.92, -17.816, 94.501
+48.923, -17.921, 93.401
+46.925, -18.015, 92.302
+44.927, -18.1, 91.202
+42.928, -18.177, 90.102
+40.929, -18.246, 89.002
+38.93, -18.309, 87.903
+36.931, -18.372, 86.803
+34.932, -18.44, 85.703
+32.934, -18.524, 84.603
+30.938, -18.644, 83.504
+28.947, -18.833, 82.404
+26.985, -19.206, 82.404
+25.308, -20.205, 82.404
+25.434, -22.107, 82.404
+26.491, -23.8, 82.404
+27.739, -25.362, 82.404
+29.059, -26.864, 82.404
+30.412, -28.337, 80.709
+31.783, -29.793, 77.498
+33.164, -31.24, 74.148
+34.548, -32.684, 70.639
+35.932, -34.127, 66.947
+37.316, -35.572, 63.039
+38.697, -37.018, 58.872
+40.074, -38.468, 54.387
+41.447, -39.923, 49.497
+42.816, -41.381, 44.067
+44.179, -42.844, 37.867
+45.537, -44.313, 30.429
+46.891, -45.785, 20.443
+48, -47, 0
+48, -47, 0
+61.485, -61.77, 0
+endData
+127
+100
+200
+60.895, -17.116, 15.411, -21, 15.73, -11.5, 48, -47
+#PATH.JERRYIO-DATA {"appVersion":"0.10.0","format":"LemLib v0.5","gc":{"robotWidth":15.4,"robotHeight":18.2,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2026 - Push Back","signature":"V5RC-PushBack-H2H-TopDownHighlighted-TileColor66_71","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"JvIBGpEmiK","x":60.895,"y":-17.116,"lock":false,"visible":true,"heading":270,"__type":"end-point"},{"uid":"qGIalW7Rq5","x":15.411,"y":-21,"lock":false,"visible":true,"__type":"control"},{"uid":"LKjDt80oFA","x":15.729532786951172,"y":-11.500365952723735,"lock":false,"visible":true,"__type":"control"},{"uid":"4CzF91ZYtL","x":48,"y":-47,"lock":false,"visible":true,"heading":90,"__type":"end-point"}],"speedProfiles":[{"uid":"rxd1FP7nqD","xPos":0.43243243243243246,"yPos":0.7800476676881172,"followBentRate":false}],"lookaheadKeyframes":[],"uid":"4tSewiG9t9"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"LG20o4Fe1Z","lock":false,"visible":true}]}

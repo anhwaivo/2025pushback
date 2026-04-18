@@ -1,0 +1,380 @@
+ASSET(oldauto3_txt);
+void autoright_new() {
+    speedAbove = 127;
+    setLevel(0);
+    // chassis.setPose(61.367, 17.377, 270);
+    chassis.setPose(46.3, 16.8, 270);
+    // pros::delay(500);
+    intakeMode = 1;
+    // chassis.follow(oldauto_txt, 7, 6300, true, false);
+    // chassis.follow(oldauto1_txt, 8, 6800, true, false);
+    // chassis.follow(oldauto2_txt, 8, 6800, true, false);
+    chassis.follow(oldauto3_txt, 7, 6800, true, false);
+    // chassis.follow(oldautotest_txt, 10, 6300, true, false);
+    chassis.waitUntilDone();
+    // intakeMode = 2;
+    chassis.turnToHeading(90, 650, {.maxSpeed = 100}, true);
+    
+    handleLoader();
+    pros::delay(200);
+    intakeMode = 1;
+    
+    // dap loader
+    // chassis.moveToPoint(58, 46.5, 500, {.maxSpeed = 127, .minSpeed = 127}, true);
+    // chassis.moveToPoint(54.5, 46.5, 300, {.forwards = false});
+    // chassis.moveToPoint(58, 46.5, 600, {.maxSpeed = 127, .minSpeed = 127}, true);
+    // pros::delay(550);
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, 47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, 47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+
+    // qua long goal
+    chassis.moveToPoint(40.6, 46.5, 950, {.forwards = false}, true);
+    chassis.waitUntilDone();
+    // intakeMode = 0; 
+    setLevel(2);
+    intakeMode = 0;
+    chassis.turnToHeading(280, 950);
+    intakeMode = 1;
+    chassis.moveToPose(29, 47.5, 270, 900);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+}
+
+void autoleftwp_new() {
+    speedAbove = 127;
+    speedUnder = 127;
+    setLevel(1);
+    chassis.setPose(46.3, -16.4, 270);
+    intakeMode = 1;
+    // chassis.moveToPose(29, -26, 260, 1000);
+    chassis.moveToPose(18, -22, 260, 1400);
+    // pros::delay(1500);
+    chassis.moveToPose(13, -13, 315, 1500);
+    chassis.waitUntilDone();
+    speedAbove = 60;
+    descoreLeft.set_value(true);
+    pros::delay(600);
+    descoreLeft.set_value(false);
+    intakeMode = 0;
+    speedAbove = 127;
+    chassis.moveToPoint(46.5, -46.5, 1400,{.forwards = false}, true);
+    // OPTIMIZE
+
+    chassis.turnToHeading(90, 500);
+    handleLoader();
+    intakeMode = 1;
+    chassis.waitUntilDone();
+    
+    chassis.moveToPoint(58, -47, 500, {.minSpeed = 127}, true);
+    chassis.moveToPoint(54.5, -47, 300, {.forwards = false});
+    chassis.moveToPoint(58, -47, 600, {.minSpeed = 127}, true);
+    pros::delay(550);
+    // OPTIMIZE
+
+    // qua long goal
+    chassis.moveToPoint(38, -47.5, 750, {.forwards = false}, true);
+    // intakeMode = 0;
+    setLevel(2);
+    chassis.turnToHeading(270, 950);
+    intakeMode = 1;
+    chassis.moveToPose(29, -47.5, 270,  1000);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+}
+
+ASSET(autolong_txt);
+void auto_right_side() {
+    // Set up
+    speedAbove = 127;
+    speedUnder = 127;
+    setLevel(0);
+    chassis.setPose(45.35, 15.215, 270);
+
+    // 3 square blocks
+    chassis.swingToHeading(287, DriveSide::RIGHT, 500);
+    intakeMode = 1;
+    chassis.moveToPose(29, 19.0, 287, 900);
+    chassis.waitUntilDone();
+    handleLoader();
+    chassis.moveToPoint(10.5, 25.087, 1000, {.maxSpeed = 100});
+    pros::delay(350);
+    setLevel(0);
+
+    // 2 blocks under long goal
+    chassis.swingToHeading(0, DriveSide::RIGHT, 850);
+    chassis.moveToPoint(4, 46.5,1200);
+    chassis.follow(autolong_txt, 7, 3000);
+
+    // Loader
+    chassis.turnToHeading(90, 600);
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+    chassis.moveToPoint(53.8, 47, 1000, {.maxSpeed = 127}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, 47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, 47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, 47, 340, {.minSpeed = 127}, false);
+    chassis.waitUntilDone();
+
+    // Outtake long goal
+    chassis.moveToPoint(40.5, 47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPose(29, 48, 270,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+}
+
+ASSET(autoskill_txt);
+ASSET(autoskill2_txt);
+void autoskill() {
+    // Set up
+    speedAbove = 127;
+    speedUnder = 127;
+    descoreLeft.set_value(false);
+    chassis.setPose(-46.25, 15.35, 0);
+    
+    // Left Red
+    chassis.moveToPoint(-46.25, 46.5, 1200,{.maxSpeed = 127}, false);
+    chassis.turnToHeading(270, 600);
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+
+    //CHỖ NÀY NÈ
+    chassis.moveToPoint(-53.8, 47, 1000, {.maxSpeed = 100}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(-56.3, 47, 2040, {.minSpeed = 120}, false);
+    pros::delay(500);
+    chassis.moveToPoint(-56.5, 47, 2040, {.minSpeed = 120}, false);
+    pros::delay(1000);
+    //CHỖ NÀY NÈ
+
+    chassis.moveToPoint(-40.5, 47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPose(-29, 48, 90,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+    pros::delay(600);
+    descoreLeft.set_value(false);
+    intakeMode = 0;
+
+    // Right Red
+    chassis.moveToPoint(-43, 48, 1000, {.forwards = false});
+    chassis.turnToHeading(180, 1000);
+
+
+
+
+
+
+
+    
+    chassis.moveToPoint(-43, -46.5, 3000,{.maxSpeed = 80}, false);
+    chassis.turnToHeading(270, 600);
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+    chassis.moveToPoint(-53.8, -47, 1000, {.maxSpeed = 127}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(-56.225, -47, 2040, {.minSpeed = 127}, false);
+    pros::delay(2000);
+
+    chassis.moveToPoint(-40.5, -47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPose(-29, -48, 90,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+    pros::delay(2000);
+    descoreLeft.set_value(false);
+    intakeMode = 0;
+
+    // Right Blue
+    chassis.moveToPoint(-43, -48, 1000, {.forwards = false});
+    chassis.turnToHeading(125, 1000);
+    chassis.moveToPoint(-28.5, -58, 1000);
+    chassis.swingToHeading(90, DriveSide::LEFT, 800);
+    chassis.moveToPoint(40.051, -58, 5000, {.maxSpeed = 60});
+    chassis.swingToHeading(33, DriveSide::LEFT, 800);
+    chassis.moveToPoint(47, -46.5, 3000, {.maxSpeed = 90});
+    chassis.turnToHeading(90, 1000);
+
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+
+    //CHỖ NÀY NÈ
+    chassis.moveToPoint(53.8, -47, 1000, {.maxSpeed = 100}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(56.3, -47, 2040, {.minSpeed = 120}, false);
+    pros::delay(500);
+    chassis.moveToPoint(56.5, -47, 2040, {.minSpeed = 120}, false);
+    pros::delay(1000);
+    //CHỖ NÀY NÈ
+
+    chassis.moveToPoint(40.5, -47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPose(29, -48, 270,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+    pros::delay(600);
+    descoreLeft.set_value(false);
+    intakeMode = 0;
+
+    // Left Blue
+    chassis.moveToPoint(43, -48, 1000, {.forwards = false});
+    chassis.turnToHeading(0, 1000);
+    
+    chassis.moveToPoint(43, 46.5, 5000,{.maxSpeed = 60}, false);
+    chassis.turnToHeading(90, 600);
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+    chassis.moveToPoint(53.8, 47, 1000, {.maxSpeed = 127}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(56.225, 47, 2040, {.minSpeed = 127}, false);
+    pros::delay(2000);
+
+    chassis.moveToPoint(40.5, 47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPose(29, 48, 270,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+    pros::delay(2000);
+    descoreLeft.set_value(false);
+    intakeMode = 0;    
+}
+
+ASSET(autoganh1_txt);
+ASSET(autoganh2_txt);
+void auto_left_side() {
+    // Set up
+    speedAbove = 127;
+    speedUnder = 127;
+    descoreLeft.set_value(false);
+    chassis.setPose(46.25, -15.35, 180);
+
+    // Loader
+    chassis.moveToPoint(46.25, -46.5, 1200,{.maxSpeed = 127}, false);
+    chassis.turnToHeading(90, 600);
+    handleLoader();
+    chassis.waitUntilDone();
+    intakeMode = 1;
+    chassis.moveToPoint(53.8, -47, 1000, {.maxSpeed = 127}, false);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(58, -47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, -47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, -47, 340, {.minSpeed = 127}, false);
+    chassis.moveToPoint(54, -47, 400, {.forwards = false}, false);
+    chassis.moveToPoint(58, -47, 340, {.minSpeed = 127}, false);
+    chassis.waitUntilDone();
+
+    // Outtake long goal
+    chassis.moveToPoint(40.5, -47.5, 750, {.forwards = false}, false);
+    setLevel(2);
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPose(29, -48, 270,  1300);
+    chassis.waitUntilDone();
+    descoreLeft.set_value(true);
+    pros::delay(1200);
+    descoreLeft.set_value(false);
+
+    // 3 square blocks
+    chassis.moveToPoint(47, -47.5, 1100, {.forwards = false}, false);
+    chassis.turnToHeading(312, 900);
+    chassis.moveToPoint(29.25, -30.75, 1000);
+    chassis.waitUntilDone();
+    handleLoader();
+
+    // Outtake centre goal
+    chassis.moveToPose(11, -14, 312, 1000);
+    chassis.waitUntilDone();
+    setLevel(1); 
+    speedAbove = 70;
+    descoreLeft.set_value(true);
+}
+
+void controlcenter() {
+    speedAbove = 127;
+    speedUnder = 127;
+    // chassis.setPose(61.367, 17.377, 270);
+    chassis.setPose(46.25, -15.35, 180);
+    
+    // chassis.moveToPose(46.5, 46.5, 90, 1500, {.maxSpeed = 127, .minSpeed = 127}, true);
+    chassis.moveToPoint(46.25, -46.5, 1000,{.maxSpeed = 127}, false);
+    intakeMode = 1;
+    // OPTIMIZE
+    chassis.turnToHeading(90, 500);
+    handleLoader();
+    chassis.waitUntilDone();
+    
+    chassis.moveToPoint(57.5, -47.5, 500, {.maxSpeed = 127, .minSpeed = 127}, false);
+    chassis.moveToPoint(54, -47.5, 300, {.forwards = false});
+    chassis.moveToPoint(57.5, -47.5, 500, {.maxSpeed = 127, .minSpeed = 127}, false);
+    chassis.moveToPoint(54, -47.5, 300, {.forwards = false});
+    chassis.moveToPoint(57.5, -47.5, 500, {.maxSpeed = 127, .minSpeed = 127}, false);
+    // pros::delay(10/00);
+    // OPTIMIZE
+
+    // qua long goal
+    chassis.moveToPoint(47.5, -47.5, 750, {.forwards = false}, true);
+    // intakeMode = 0;
+    // setLevel(2);
+    // chassis.turnToHeading(270, 950);
+    // // intakeMode = 1;
+    // chassis.moveToPose(29, -47.5, 270,  1600);
+    // chassis.waitUntilDone();
+    // descoreLeft.set_value(true);
+    // pros::delay(1500);
+    // descoreLeft.set_value(false);
+
+    // intakeMode = 0;
+    // chassis.moveToPoint(47, -47, 350, {.forwards = false}, true);
+    setLevel(2);
+    chassis.turnToPoint(23, -23, 350);
+    // intakeMode = 1;
+    chassis.moveToPose(26, -26, 315, 1200);
+    chassis.waitUntilDone();
+    handleLoader();
+    chassis.moveToPose(12, -12, 315, 1000);
+    chassis.waitUntilDone();
+    setLevel(1); 
+    speedAbove = 110;
+    descoreLeft.set_value(true);
+    pros::delay(1000);
+
+    descoreLeft.set_value(false);
+
+    speedAbove = 127;
+    chassis.moveToPoint(22, -22, 800, {.forwards = false});
+    chassis.turnToHeading(0, 600);
+    chassis.moveToPoint(22, 22, 1200);
+    chassis.waitUntilDone();
+    handleLoader();
+    // chassis.moveToPose(25, 22, 215, 1200);
+    chassis.turnToHeading(215, 600);
+    chassis.waitUntilDone();
+    
+    // chassis.waitUntilDone();
+    chassis.moveToPose(10, 10, 215, 800);
+    setLevel(0);
+    chassis.waitUntilDone();
+    // setLevel(1); 
+    intakeMode = 2;
+    // descoreLeft.set_value(true);
+    // pros::delay(1000);
+    // chassis.turnToHeading(, int timeout)
+
+
+    // chassis.swingToPoint(23, -23, DriveSide::LEFT, 800, {.forwards = false});
+}

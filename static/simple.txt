@@ -1,0 +1,34 @@
+44.5, 0, 51.941
+42.5, 0.02, 51.941
+40.503, -0.073, 51.941
+38.52, -0.325, 51.941
+36.568, -0.757, 51.941
+34.677, -1.402, 51.941
+32.885, -2.288, 51.941
+31.25, -3.434, 51.941
+29.807, -4.816, 51.941
+28.583, -6.395, 51.941
+27.572, -8.119, 51.941
+26.748, -9.941, 51.941
+26.073, -11.823, 51.941
+25.509, -13.741, 51.941
+25.023, -15.681, 51.941
+24.579, -17.631, 51.941
+24.146, -19.584, 51.941
+23.692, -21.532, 51.941
+22.955, -22.627, 51.941
+21.513, -21.241, 50.149
+20.072, -19.854, 44.798
+18.63, -18.468, 38.715
+17.189, -17.081, 31.478
+15.747, -15.695, 21.975
+14.377, -14.377, 0
+14.377, -14.377, 0
+-0.038, -0.513, 0
+endData
+127
+100
+200
+44.5, 0, 25.889, 0.76, 26.134, -12.7, 23.32, -22.978
+23.32, -22.978, 18.848, -18.678, 18.848, -18.678, 14.377, -14.377
+#PATH.JERRYIO-DATA {"appVersion":"0.10.0","format":"LemLib v0.5","gc":{"robotWidth":16,"robotHeight":17.5,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2026 - Push Back","signature":"V5RC-PushBack-H2H-TopDownHighlighted-TileColor66_71","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"G4OwuCaymG","x":44.5,"y":0,"lock":false,"visible":true,"heading":271.49413085937476,"__type":"end-point"},{"uid":"H7RSQCclnR","x":25.889187913209494,"y":0.7600715608393194,"lock":false,"visible":true,"__type":"control"},{"uid":"51Ca4w0m0I","x":26.133910959774482,"y":-12.699696000235072,"lock":false,"visible":true,"__type":"control"},{"uid":"JZzFh11QSX","x":23.319595924277113,"y":-22.978063955964597,"lock":false,"visible":true,"heading":314.8254296875002,"__type":"end-point"}],"speedProfiles":[{"uid":"9T9fW4rptB","xPos":0,"yPos":0.3992649847272386,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"3u6RpYiGzJ"},{"controls":[{"uid":"JZzFh11QSX","x":23.319595924277113,"y":-22.978063955964597,"lock":false,"visible":true,"heading":314.8254296875002,"__type":"end-point"},{"uid":"ICRbtPLN2S","x":14.377,"y":-14.377,"lock":false,"visible":true,"heading":313.3792578125001,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"yLd72yOlvS"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"rSXSPXnECd","lock":false,"visible":true}]}
