@@ -15,3 +15,7 @@ temp.log
 temp.errors
 *.ini
 .d/
+
+# random
+echo notebook.pdf
+monte-carlo-localization/
