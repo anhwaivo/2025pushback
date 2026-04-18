@@ -690,18 +690,18 @@ void rightdescore7bloc() {
   chassis.moveToPoint(25.2, 19.55, 750, {}, true);
   pros::delay(450);
   counterLoader.set_value(true);
-  chassis.turnToPoint(42, 47.75, 500, {}, true);
-  chassis.moveToPoint(42, 47.75, 1200, {}, true);
+  chassis.turnToPoint(45, 47.75, 500, {}, true);
+  chassis.moveToPoint(45, 47.75, 1200, {}, true);
 
 
   // chassis.turnToPoint(59.75, 47.75, 500, {}, true);
-  chassis.turnToHeading(90, 600, {}, false);
+  chassis.turnToHeading(90, 500, {}, false);
   resetposeskilly(1);
   pros::delay(50);
   // intakeMode = 4;
   // pros::delay(150);
   // intakeMode = 1;
-  chassis.moveToPoint(59.80, 46.75, 785, {.maxSpeed = 60}, false);
+  chassis.moveToPoint(59.9, 46.75, 800, {.maxSpeed = 60}, false);
   // chassis.turnToHeading(90, 400, {}, false);
   // resetposeskillxNorth(1);
   resetposeskilly(1);
@@ -713,10 +713,13 @@ void rightdescore7bloc() {
   chassis.moveToPoint(22.5, 47.5, 1150, {.forwards = false, .maxSpeed = 67});
   // chassis.moveToPose(22.5, 47.25, 90, 1000, {.forwards = false}, false);
   // pros::delay(600);
+  // chassis.waitUntilDone();
+  
+  // intakeMode = 1;
   chassis.waitUntilDone();
-  // intakeMode = 4;
-  // pros::delay(150);
   // // setStage(2);
+  intakeMode = 4;
+  pros::delay(150);
   intakeMode = 2;
   pros::delay(1200);
   chassis.turnToHeading(90, 500, {});
@@ -731,7 +734,7 @@ void rightdescore7bloc() {
   descoreRight.set_value(false);
 
   // chassis.moveToPose(39.5, 40, 90, 1400, {}, true);
-  chassis.moveToPoint(35, 40, 1400, {}, true);
+  chassis.moveToPoint(35, 40, 1000, {}, true);
   
 
   // chassis.moveToPoint(40, 47.25, 700, {}, true);
@@ -740,7 +743,7 @@ void rightdescore7bloc() {
   // chassis.turnToHeading(100, 400, {}, true);
   chassis.turnToHeading(90, 700, {}, true);
   // descoreLeft.set_value(false);
-  chassis.moveToPoint(13, 40, 1670, {.forwards = false}, true);
+  chassis.moveToPoint(13.1, 40, 1670, {.forwards = false}, true);
   // chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000,
   // {.minSpeed = 120}, false);
   chassis.turnToHeading(90, 9000, {}, false);
