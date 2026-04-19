@@ -31,6 +31,7 @@ extern pros::Distance dSouth; // Back (X reset south)
 extern pros::Distance dWest;  // Port 10 (Y/X reset west)
 extern pros::Distance dEast;  // Port 1 (Y reset east)
 extern bool manualPneumaticOverride;
+extern pros::Controller controller;
 
 /**
  * Super simple helper: drive straight forward until the front distance sensor
@@ -399,23 +400,23 @@ void leftdescore7bloc() {
   pros::delay(450);
   counterLoader.set_value(true);
   // chassis.turnToHeading(130, 700, {}, false);
-  chassis.turnToPoint(41.5, -47.75, 500, {}, true);
-  chassis.moveToPoint(41.5, -47.75, 1150, {}, true);
+  chassis.turnToPoint(43, -48.5, 500, {}, true);
+  chassis.moveToPoint(43, -48.5, 1150, {}, true);
 
 
-  chassis.turnToPoint(59.75, -48.25, 500, {}, true);
+  // chassis.turnToPoint(59.75, -49, 500, {}, true);
 
-  // chassis.turnToHeading(90, 550, {}, true);
+  chassis.turnToHeading(90, 600, {}, false);
   // counterLoader.set_value(true);
-  // resetposeskillyEast(-1);
-  // pros::delay(100);
+  resetposeskillyEast(-1);
+  pros::delay(50);
   // chassis.turnToPoint(62, chassis.getPose().y, 650, {}, true);
   
   
   // intakeMode = 4;
   // pros::delay(100);
   // intakeMode = 1;
-  chassis.moveToPoint(59.75, -48.25, 720, {.maxSpeed = 60}, false);
+  chassis.moveToPoint(59.75, -47.5, 720, {.maxSpeed = 60}, false);
   // chassis.moveToPose(59.75, -47.5, 90, 950, {.maxSpeed = 60}, false);
   // chassis.turnToHeading(90, 650);
   resetposeskillyEast(-1);
@@ -442,7 +443,7 @@ void leftdescore7bloc() {
   intakeMode = 2;
   // resetposeskillxNorth(1);
   // resetposeskillyEast(-1);
-  pros::delay(1200);
+  pros::delay(1300);
   // intakeMode = 0;
   chassis.turnToHeading(90, 450, {});
   resetposeskillyEast(-1);
@@ -458,11 +459,13 @@ void leftdescore7bloc() {
   // descore phai
   // chassis.turnToHeading(140, 600, {}, true); 
   // chassis.moveToPoint(31, -36.95, 850, {.forwards = false}, true);
-  chassis.moveToPose(35.55, -35.75, 90, 1100, {}, true);
+  chassis.moveToPose(35.55, -38.9, 90, 1200, {}, true);
   // chassis.moveToPose((chassis.getPose().x)+1, -36.5, 90, 1100, {}, true);
 
   chassis.turnToHeading(90, 400, {}, true);
-  chassis.moveToPoint(13.2, -36.15, 1500, {.forwards = false, .minSpeed = 80}, true); 
+  intakeMode = 0;
+  chassis.moveToPoint(13.2, -39, 1500, {.forwards = false, .minSpeed = 80}, true); 
+
   chassis.turnToHeading(90, 10000, {}, false);
 
 
@@ -623,21 +626,21 @@ void leftlongcenter2() {
   chassis.turnToHeading(90, 800, {},false);
   resetposeskillyEast(-1);
   // resetposeskillxNorth(1);
-  pros::delay(50);
+  pros::delay(100);
 
 
-  chassis.moveToPose(27.5, -25, 0, 1800, {.maxSpeed = 75});
+  chassis.moveToPose(28.25, -25, 0, 1800, {.maxSpeed = 75});
   pros::delay(1200);
   counterLoader.set_value(true);
   intakeMode = 1;
   chassis.waitUntilDone();
 
-  // chassis.turnToPoint(8, -8, 1000, {.forwards = false});
+  chassis.turnToPoint(8, -8, 1000, {.forwards = false}, false);
   
-  chassis.turnToHeading(135, 900, {}, false);
+  // chassis.turnToHeading(135, 900, {}, false);
   counterLoader.set_value(false);
-  // chassis.moveToPoint(13.25, -13.25, 1000, {.forwards = false, .maxSpeed = 85});
-  chassis.moveToPose(16.5, -11, 135, 1100, {.forwards = false});
+  // chassis.moveToPoint(13.25, -13.25, 1000, {.forwards = false});
+  chassis.moveToPose(16, -11, 135, 1100, {.forwards = false});
   chassis.waitUntilDone();
 
   // intakeSpeed = 75;
@@ -648,11 +651,11 @@ void leftlongcenter2() {
   // intakeSpeed = 127;
   // intakeMode = 1;
 
-  chassis.moveToPose(38, -36.75, 90, 1900);
+  // chassis.moveToPose(40, -36.2, 90, 1900);
   
-  // chassis.moveToPoint(38, -38, 1800, {}, true);
+  chassis.moveToPoint(40, -39, 1400, {}, true);
   chassis.turnToHeading(90, 600, {}, true);
-  chassis.moveToPoint(18, -38, 1670, {.forwards = false}, true);
+  chassis.moveToPoint(19, -39.5, 1670, {.forwards = false}, true);
   descoreLeft.set_value(false);
   descoreRight.set_value(false);
   intakeMode = 4;
@@ -742,6 +745,7 @@ void rightdescore7bloc() {
   // chassis.moveToPoint(30, 36.5, 800, {.forwards = false}, true);
   // chassis.turnToHeading(100, 400, {}, true);
   chassis.turnToHeading(90, 700, {}, true);
+  intakeMode = 0;
   // descoreLeft.set_value(false);
   chassis.moveToPoint(13.1, 40, 1670, {.forwards = false}, true);
   // chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000,
@@ -804,9 +808,10 @@ void rightcenterdescore() {
   descoreLeft.set_value(false);
   descoreRight.set_value(false);
   chassis.turnToHeading(90, 400, {}, true);
+  intakeMode = 0;
   chassis.moveToPoint(13.25, 43.25, 1670, {.forwards = false}, true);
   chassis.turnToHeading(90, 9000, {}, false);
-  intakeMode = 0;
+  
 
 
 }
@@ -1173,6 +1178,8 @@ void testodo11() {
   chassis.setPose(0, 0, 90);
   // pros::delay(100);
   resetposeskillyEast(-1);
+  lemlib::Pose pose = chassis.getPose();
+  controller.print(0, 0, "X:%.1f Y:%.1f", pose.x, pose.y);
   // resetposeskilly(-1);
   // resetposeskillxNorth(1);
   // resetposeskillxSouth(1);

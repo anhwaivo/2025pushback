@@ -19,7 +19,7 @@
 
 // ========== GLOBAL STATE ==========
 bool calibrate = false;
-bool disableBrainScreen = false;  // Set true during match to save resources
+bool disableBrainScreen = true;  // Set true during match to save resources
 
 // === Motors ===
 pros::MotorGroup leftMotors({-12, -13, -14}, pros::MotorGearset::blue);
@@ -102,7 +102,7 @@ AutonSelector auton_selector;
 // - &pidTuneTurn
 // - &pidTuneVelocity
 // - &awp
-AutonSelector::routine_action_t manualAutonFunction = &testodo11; // nullptr = use selector, or set to function pointer
+AutonSelector::routine_action_t manualAutonFunction = nullptr; // nullptr = use selector, or set to function pointer
 
 void disabled() {
     // Update selector while disabled
@@ -223,7 +223,7 @@ void intakeTaskFn() {
             else if (yHeld) {
                 intake.move(speed);
                 conveyor.move(speed);
-                outtake.move(50);
+                outtake.move(speed);
             }
             // R1 toggled on: spin intake and conveyor only
             else if (r1Toggle) {
@@ -284,7 +284,7 @@ void intakeTaskFn() {
             } else if (intakeMode == 3) {
                 intake.move(intakeSpeed);
                 conveyor.move(intakeSpeed);
-                outtake.move(85);
+                outtake.move(105);
                 blockblock.set_value(false);
                 stage.set_value(false);
             } else if (intakeMode == 4) {
@@ -528,7 +528,7 @@ void opcontrol() {
         
         // Update controller display periodically (every 20 loops = ~500ms)
         // Controller serial is slow, reducing frequency saves CPU
-        if (controllerDisplayCounter % 20 == 0) {
+        if (controllerDisplayCounter % 20 == 0 && !disableBrainScreen) {
             lemlib::Pose pose = chassis.getPose();
             controller.print(0, 0, "X:%.1f Y:%.1f", pose.x, pose.y);
         }

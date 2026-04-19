@@ -21,17 +21,17 @@ AutonSelector::AutonSelector()
     
     // Create routine list
     all_routines = {
-        {"leftdescore7bloc", &leftdescore7bloc},
-        {"leftlongcenter2", &leftlongcenter2},
-        {"rightdescore7bloc", &rightdescore7bloc},
-        {"rightcenterdescore", &rightcenterdescore},
-        {"rightlower", &rightlower},
-        {"awp", &awp},
-        {"Skillz", &skillz},
-        {"Test Odo", &testodo11},
-        {"PID Drive", &pidTuneDrive},
-        {"PID Turn", &pidTuneTurn},
-        {"PID Velocity", &pidTuneVelocity}
+        {"trai | 7 block", &leftdescore7bloc},
+        {"trai | center", &leftlongcenter2},
+        {"phai | 7 block", &rightdescore7bloc},
+        {"phai | center", &rightcenterdescore}
+        // {"rightlower", &rightlower},
+        // {"awp", &awp},
+        // {"Skillz", &skillz},
+        // {"Test Odo", &testodo11},
+        // {"PID Drive", &pidTuneDrive},
+        // {"PID Turn", &pidTuneTurn},
+        // {"PID Velocity", &pidTuneVelocity}
     };
 }
 
