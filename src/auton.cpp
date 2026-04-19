@@ -1170,13 +1170,13 @@ void skillz() {
 }
 
 void testodo11() {
-  chassis.setPose(0, 0, 270 + 180);
-  pros::delay(100);
+  chassis.setPose(0, 0, 90);
+  // pros::delay(100);
   resetposeskillyEast(-1);
   // resetposeskilly(-1);
   // resetposeskillxNorth(1);
   // resetposeskillxSouth(1);
-  pros::delay(100);
+  // pros::delay(100);
 
   // intakeMode = 1;
   // chassis.moveToPose()
