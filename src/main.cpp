@@ -289,7 +289,7 @@ void intakeTaskFn() {
                 stage.set_value(false);
             } else if (intakeMode == 4) {
                 // Reverse all
-                intake.move(-80);
+                intake.move(-72);
                 conveyor.move(-intakeSpeed);
                 outtake.move(-intakeSpeed);
             }
@@ -485,6 +485,7 @@ void initialize() {
 void opcontrol() {   
 
     // chassis.setPose(45.4, 0, 270.0);
+    chassis.setPose(48.5, 17.5, 0);
     odoLift.set_value(false);
 
     if (!disableBrainScreen) {
