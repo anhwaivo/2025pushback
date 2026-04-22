@@ -333,7 +333,8 @@ void awp() {
   pros::delay(50);
   chassis.moveToPoint(56.5, 47.5, 900, {}, false);
   // pros::delay(400);
-  chassis.moveToPoint(23, 47.5, 1000, {.forwards = false, .minSpeed = 100},false);
+  chassis.moveToPoint(23, 47.5, 1000, {.forwards = false, .minSpeed = 100},
+                      false);
   // pros::delay(150);
   // intakeMode = 4;
   // blockblock.set_value(false);
@@ -403,7 +404,6 @@ void leftdescore7bloc() {
   chassis.turnToPoint(43, -48.5, 500, {}, true);
   chassis.moveToPoint(43, -48.5, 1150, {}, true);
 
-
   // chassis.turnToPoint(59.75, -49, 500, {}, true);
 
   chassis.turnToHeading(90, 600, {}, false);
@@ -411,8 +411,7 @@ void leftdescore7bloc() {
   resetposeskillyEast(-1);
   pros::delay(50);
   // chassis.turnToPoint(62, chassis.getPose().y, 650, {}, true);
-  
-  
+
   // intakeMode = 4;
   // pros::delay(100);
   // intakeMode = 1;
@@ -429,9 +428,8 @@ void leftdescore7bloc() {
   // chassis.turnToHeading(90, 500, {}, true);
   // intakeMode = 0;
   chassis.moveToPoint(22.5, -47.25, 1150, {.forwards = false, .maxSpeed = 67});
-  // chassis.moveToPose(22.5, -47.25, 90, 1250, {.forwards = false, .maxSpeed = 80}, true);
-  // pros::delay(700);
-  // chassis.turnToHeading(90, 350, {});
+  // chassis.moveToPose(22.5, -47.25, 90, 1250, {.forwards = false, .maxSpeed =
+  // 80}, true); pros::delay(700); chassis.turnToHeading(90, 350, {});
 
   // intakeMode = 1;
   chassis.waitUntilDone();
@@ -455,19 +453,18 @@ void leftdescore7bloc() {
   descoreLeft.set_value(false);
   descoreRight.set_value(false);
 
-
   // descore phai
-  // chassis.turnToHeading(140, 600, {}, true); 
+  // chassis.turnToHeading(140, 600, {}, true);
   // chassis.moveToPoint(31, -36.95, 850, {.forwards = false}, true);
   chassis.moveToPose(35.55, -38.9, 90, 1200, {}, true);
   // chassis.moveToPose((chassis.getPose().x)+1, -36.5, 90, 1100, {}, true);
 
   chassis.turnToHeading(90, 400, {}, true);
   intakeMode = 0;
-  chassis.moveToPoint(13.2, -39, 1500, {.forwards = false, .minSpeed = 80}, true); 
+  chassis.moveToPoint(13.2, -39, 1500, {.forwards = false, .minSpeed = 80},
+                      true);
 
   chassis.turnToHeading(90, 10000, {}, false);
-
 
   // chassis.turnToHeading(30, 400, {}, true);
   // chassis.moveToPoint(31, -57.75, 1100, {.forwards = false}, true);
@@ -598,11 +595,10 @@ void leftlongcenter2() {
   chassis.setPose(48.5, -17.5, 180);
   chassis.moveToPoint(48.5, -48.75, 1300, {}, true);
 
-  
   counterLoader.set_value(true);
   chassis.turnToHeading(90, 700, {}, false);
   // chassis.turnToPoint(59.5, -47.5, 800, {}, false);
-  // 
+  //
   // resetposeskillxNorth(1);
   resetposeskillyEast(-1);
   pros::delay(50);
@@ -614,20 +610,19 @@ void leftlongcenter2() {
   pros::delay(50);
   // pros::delay(400);
 
-  // chassis.cancelMotion();  
+  // chassis.cancelMotion();
 
   chassis.turnToPoint(22.5, -47.5, 450, {.forwards = false}, true);
   chassis.moveToPoint(22.5, -47.5, 1200, {.forwards = false, .maxSpeed = 67});
-  
+
   chassis.waitUntilDone();
   intakeMode = 2;
   // pros::delay(800);
   counterLoader.set_value(false);
-  chassis.turnToHeading(90, 800, {},false);
+  chassis.turnToHeading(90, 800, {}, false);
   resetposeskillyEast(-1);
   // resetposeskillxNorth(1);
   pros::delay(100);
-
 
   chassis.moveToPose(28.25, -25, 0, 1800, {.maxSpeed = 75});
   pros::delay(1200);
@@ -636,7 +631,7 @@ void leftlongcenter2() {
   chassis.waitUntilDone();
 
   chassis.turnToPoint(8, -8, 1000, {.forwards = false}, false);
-  
+
   // chassis.turnToHeading(135, 900, {}, false);
   counterLoader.set_value(false);
   // chassis.moveToPoint(13.25, -13.25, 1000, {.forwards = false});
@@ -652,7 +647,7 @@ void leftlongcenter2() {
   // intakeMode = 1;
 
   // chassis.moveToPose(40, -36.2, 90, 1900);
-  
+
   chassis.moveToPoint(40, -39, 1400, {}, true);
   chassis.turnToHeading(90, 600, {}, true);
   chassis.moveToPoint(19, -39.5, 1670, {.forwards = false}, true);
@@ -696,7 +691,6 @@ void rightdescore7bloc() {
   chassis.turnToPoint(45, 47.75, 500, {}, true);
   chassis.moveToPoint(45, 47.75, 1200, {}, true);
 
-
   // chassis.turnToPoint(59.75, 47.75, 500, {}, true);
   chassis.turnToHeading(90, 500, {}, false);
   resetposeskilly(1);
@@ -704,20 +698,20 @@ void rightdescore7bloc() {
   // intakeMode = 4;
   // pros::delay(150);
   // intakeMode = 1;
-  chassis.moveToPoint(59.9, 46.75, 650, {.maxSpeed = 60}, false);
+  chassis.moveToPoint(59.9, 46.75, 650, {.maxSpeed = 67}, false);
   // chassis.turnToHeading(90, 400, {}, false);
   // resetposeskillxNorth(1);
   resetposeskilly(1);
   pros::delay(50);
-  // chassis.cancelMotion();  
+  // chassis.cancelMotion();
 
   // intakeMode = 0;0
-  chassis.turnToPoint(22, 47, 450, {.forwards = false}, true);
-  chassis.moveToPoint(22, 47, 1150, {.forwards = false, .maxSpeed = 78});
+  chassis.turnToPoint(20, 47, 450, {.forwards = false}, true);
+  chassis.moveToPoint(20, 47, 1150, {.forwards = false, .maxSpeed = 85});
   // chassis.moveToPose(22.5, 47.25, 90, 1000, {.forwards = false}, false);
   // pros::delay(600);
   // chassis.waitUntilDone();
-  
+
   // intakeMode = 1;
   chassis.waitUntilDone();
   // // setStage(2);
@@ -737,8 +731,7 @@ void rightdescore7bloc() {
   descoreRight.set_value(false);
 
   // chassis.moveToPose(39.5, 40, 90, 1400, {}, true);
-  chassis.moveToPoint(30, 37.25, 1000, {}, true);
-  
+  chassis.moveToPoint(30, 37.2, 1000, {}, true);
 
   // chassis.moveToPoint(40, 47.25, 700, {}, true);
   // chassis.turnToHeading(40, 300, {}, true);
@@ -751,7 +744,6 @@ void rightdescore7bloc() {
   // chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000,
   // {.minSpeed = 120}, false);
   chassis.turnToHeading(90, 9000, {}, false);
-  
 }
 
 void rightcenterdescore() {
@@ -768,11 +760,11 @@ void rightcenterdescore() {
 
   resetposeskilly(1);
   pros::delay(50);
-  // chassis.cancelMotion();  
+  // chassis.cancelMotion();
 
   chassis.turnToPoint(20, 47.15, 450, {.forwards = false}, true);
   chassis.moveToPoint(20, 47.15, 1150, {.forwards = false, .maxSpeed = 105});
-  
+
   chassis.waitUntilDone();
   intakeMode = 2;
   pros::delay(800);
@@ -780,7 +772,6 @@ void rightcenterdescore() {
   chassis.turnToHeading(90, 650, {});
   resetposeskilly(1);
   pros::delay(50);
-  
 
   // chassis.moveToPose(22, 22, 225, 1200);
   chassis.moveToPose(4.5, 3.85, 220, 2100, {.maxSpeed = 67});
@@ -803,7 +794,7 @@ void rightcenterdescore() {
   // chassis.moveToPose(17, 37, 90, 1900);
 
   chassis.moveToPose(22, 37.27, 90, 1200, {.forwards = false}, true);
-  
+
   // chassis.moveToPoint(24.5, 41, 1400, {.forwards = false}, true);
   // pros::delay(300);
   descoreLeft.set_value(false);
@@ -812,9 +803,6 @@ void rightcenterdescore() {
   intakeMode = 0;
   chassis.moveToPoint(9.75, 37.27, 1600, {.forwards = false}, true);
   chassis.turnToHeading(90, 9000, {}, false);
-  
-
-
 }
 
 void rightdescore9bloc() {
@@ -852,7 +840,8 @@ void rightdescore9bloc() {
   intakeMode = 0;
 
   chassis.setPose(29.25, 47.15, 90);
-  chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000, {},false);
+  chassis.moveToPoint(chassis.getPose().x, chassis.getPose().y, 6000, {},
+                      false);
 }
 
 void rightlower() {
@@ -1196,7 +1185,8 @@ void testodo11() {
 // ========== PID TUNER ==========
 // Adapted from gradient_descent's Desmos-based PID tuner
 // https://www.desmos.com/calculator/g3wwb4d5l9 (Drive/Turn PID - FOPDT)
-// https://www.desmos.com/calculator/zujd40ppxq (Turn PID - SOPDT, more accurate)
+// https://www.desmos.com/calculator/zujd40ppxq (Turn PID - SOPDT, more
+// accurate)
 //
 // HOW TO USE:
 // 1. Set manualAutonFunction = &pidTuneDrive (or &pidTuneTurn) in main.cpp
@@ -1210,169 +1200,177 @@ void testodo11() {
 // NOTE: Make sure the robot has enough space to drive ~3-4 feet straight
 //       or do a full rotation for turn tuning.
 
-
 static double getAvgVelocityRPM() {
-    double sum = 0;
-    auto leftVels = leftMotors.get_actual_velocity_all();
-    auto rightVels = rightMotors.get_actual_velocity_all();
-    int count = 0;
-    for (auto v : leftVels) { sum += v; count++; }
-    for (auto v : rightVels) { sum += v; count++; }
-    return (count > 0) ? (sum / count) : 0.0;
+  double sum = 0;
+  auto leftVels = leftMotors.get_actual_velocity_all();
+  auto rightVels = rightMotors.get_actual_velocity_all();
+  int count = 0;
+  for (auto v : leftVels) {
+    sum += v;
+    count++;
+  }
+  for (auto v : rightVels) {
+    sum += v;
+    count++;
+  }
+  return (count > 0) ? (sum / count) : 0.0;
 }
-
 
 static double getAvgPositionInches() {
-    auto pose = chassis.getPose();
-    return sqrt(pose.x * pose.x + pose.y * pose.y);
+  auto pose = chassis.getPose();
+  return sqrt(pose.x * pose.x + pose.y * pose.y);
 }
 
-
 void pidTuneDrive() {
-    printf("\n\n===== DRIVE PID TUNER =====\n");
-    printf("https://www.desmos.com/calculator/g3wwb4d5l9\n\n");
+  printf("\n\n===== DRIVE PID TUNER =====\n");
+  printf("https://www.desmos.com/calculator/g3wwb4d5l9\n\n");
 
-    chassis.setPose(0, 0, 0);
-    pros::delay(200);
+  chassis.setPose(0, 0, 0);
+  pros::delay(200);
 
-    int stepPower = 80;       // Motor power step (0-127)
-    int durationMs = 3000;    
-    int sampleIntervalMs = 10;
-    int samples = durationMs / sampleIntervalMs;
+  int stepPower = 80; // Motor power step (0-127)
+  int durationMs = 3000;
+  int sampleIntervalMs = 10;
+  int samples = durationMs / sampleIntervalMs;
 
-    double initialX = chassis.getPose().x;
-    double initialY = chassis.getPose().y;
+  double initialX = chassis.getPose().x;
+  double initialY = chassis.getPose().y;
 
-    printf("\\left[");
+  printf("\\left[");
 
-    leftMotors.move(stepPower);
-    rightMotors.move(stepPower);
+  leftMotors.move(stepPower);
+  rightMotors.move(stepPower);
 
-    for (int i = 0; i < samples; i++) {
-        auto pose = chassis.getPose();
-        double dist = sqrt((pose.x - initialX) * (pose.x - initialX) + 
-                          (pose.y - initialY) * (pose.y - initialY));
-        double timeSec = (double)i * sampleIntervalMs / 1000.0;
-        
-        printf("\\left(%.3f,%.4f\\right)", timeSec, dist);
-        if (i < samples - 1) printf(",");
-        
-        // Flush periodically so terminal shows progress
-        if (i % 50 == 0) fflush(stdout);
-        
-        pros::delay(sampleIntervalMs);
-    }
+  for (int i = 0; i < samples; i++) {
+    auto pose = chassis.getPose();
+    double dist = sqrt((pose.x - initialX) * (pose.x - initialX) +
+                       (pose.y - initialY) * (pose.y - initialY));
+    double timeSec = (double)i * sampleIntervalMs / 1000.0;
 
-    // Stop motors
-    leftMotors.move(0);
-    rightMotors.move(0);
-    leftMotors.brake();
-    rightMotors.brake();
+    printf("\\left(%.3f,%.4f\\right)", timeSec, dist);
+    if (i < samples - 1)
+      printf(",");
 
-    printf("\\right]\n\n");
-    printf("Step input: %d (motor power, 0-127 scale)\n", stepPower);
-    printf("===== DONE =====\n");
-    fflush(stdout);
+    // Flush periodically so terminal shows progress
+    if (i % 50 == 0)
+      fflush(stdout);
+
+    pros::delay(sampleIntervalMs);
+  }
+
+  // Stop motors
+  leftMotors.move(0);
+  rightMotors.move(0);
+  leftMotors.brake();
+  rightMotors.brake();
+
+  printf("\\right]\n\n");
+  printf("Step input: %d (motor power, 0-127 scale)\n", stepPower);
+  printf("===== DONE =====\n");
+  fflush(stdout);
 }
 
 void pidTuneTurn() {
-    printf("\n\n===== TURN PID TUNER =====\n");
-    printf("https://www.desmos.com/calculator/zujd40ppxq\n\n");
+  printf("\n\n===== TURN PID TUNER =====\n");
+  printf("https://www.desmos.com/calculator/zujd40ppxq\n\n");
 
-    chassis.setPose(0, 0, 0);
-    pros::delay(200);
+  chassis.setPose(0, 0, 0);
+  pros::delay(200);
 
-    int stepPower = 60;       
-    int durationMs = 3000;    
-    int sampleIntervalMs = 10;
-    int samples = durationMs / sampleIntervalMs;
+  int stepPower = 60;
+  int durationMs = 3000;
+  int sampleIntervalMs = 10;
+  int samples = durationMs / sampleIntervalMs;
 
-    double initialHeading = chassis.getPose().theta;
+  double initialHeading = chassis.getPose().theta;
 
-    printf("\\left[");
+  printf("\\left[");
 
-    leftMotors.move(-stepPower);
-    rightMotors.move(stepPower);
+  leftMotors.move(-stepPower);
+  rightMotors.move(stepPower);
 
-    for (int i = 0; i < samples; i++) {
-        double heading = chassis.getPose().theta - initialHeading;
-        double timeSec = (double)i * sampleIntervalMs / 1000.0;
-        
-        printf("\\left(%.3f,%.4f\\right)", timeSec, heading);
-        if (i < samples - 1) printf(",");
-        
-        if (i % 50 == 0) fflush(stdout);
-        
-        pros::delay(sampleIntervalMs);
-    }
+  for (int i = 0; i < samples; i++) {
+    double heading = chassis.getPose().theta - initialHeading;
+    double timeSec = (double)i * sampleIntervalMs / 1000.0;
 
-    leftMotors.move(0);
-    rightMotors.move(0);
-    leftMotors.brake();
-    rightMotors.brake();
+    printf("\\left(%.3f,%.4f\\right)", timeSec, heading);
+    if (i < samples - 1)
+      printf(",");
 
-    printf("\\right]\n\n");
-    printf("Step input: %d (motor power, 0-127 scale)\n", stepPower);
-    printf("===== DONE =====\n");
-    fflush(stdout);
+    if (i % 50 == 0)
+      fflush(stdout);
+
+    pros::delay(sampleIntervalMs);
+  }
+
+  leftMotors.move(0);
+  rightMotors.move(0);
+  leftMotors.brake();
+  rightMotors.brake();
+
+  printf("\\right]\n\n");
+  printf("Step input: %d (motor power, 0-127 scale)\n", stepPower);
+  printf("===== DONE =====\n");
+  fflush(stdout);
 }
-
 
 void pidTuneVelocity() {
-    printf("\n\n===== VELOCITY vs MOTOR POWER DATA =====\n");
-    printf("Paste the output below into Desmos Velocity Controller calculator.\n");
-    printf("https://www.desmos.com/calculator/7go1fxuufd\n\n");
+  printf("\n\n===== VELOCITY vs MOTOR POWER DATA =====\n");
+  printf(
+      "Paste the output below into Desmos Velocity Controller calculator.\n");
+  printf("https://www.desmos.com/calculator/7go1fxuufd\n\n");
 
-    // Test motor powers from 0 to 127 in steps
-    int powers[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 127};
-    int numSteps = sizeof(powers) / sizeof(powers[0]);
-    double outputs[14] = {0};
-    
-    float direction = 1.0;
-    
-    for (int s = 0; s < numSteps; s++) {
-        if (powers[s] == 0) continue;
-        
-        int power = (int)(direction * powers[s]);
-        leftMotors.move(power);
-        rightMotors.move(power);
-        pros::delay(1000);  // Wait for steady state
-        
-        // Average velocity over 500 samples
-        double vSum = 0;
-        int n = 500;
-        for (int i = 0; i < n; i++) {
-            vSum += getAvgVelocityRPM();
-        }
-        outputs[s] = direction * (vSum / (double)n);
-        
-        // Slow down gracefully
-        float v = (float)(powers[s]) * direction;
-        while (fabs(v) > 5) {
-            v *= 0.9;
-            leftMotors.move((int)v);
-            rightMotors.move((int)v);
-            pros::delay(10);
-        }
-        leftMotors.move(0);
-        rightMotors.move(0);
-        
-        // Brief pause and flip direction
-        pros::delay(500);
-        direction = -direction;
+  // Test motor powers from 0 to 127 in steps
+  int powers[] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 127};
+  int numSteps = sizeof(powers) / sizeof(powers[0]);
+  double outputs[14] = {0};
+
+  float direction = 1.0;
+
+  for (int s = 0; s < numSteps; s++) {
+    if (powers[s] == 0)
+      continue;
+
+    int power = (int)(direction * powers[s]);
+    leftMotors.move(power);
+    rightMotors.move(power);
+    pros::delay(1000); // Wait for steady state
+
+    // Average velocity over 500 samples
+    double vSum = 0;
+    int n = 500;
+    for (int i = 0; i < n; i++) {
+      vSum += getAvgVelocityRPM();
     }
-    
-    leftMotors.brake();
-    rightMotors.brake();
-    
-    // Print results
-    printf("\\left[");
-    for (int s = 0; s < numSteps; s++) {
-        printf("\\left(%d,%.4f\\right)", powers[s], outputs[s]);
-        if (s < numSteps - 1) printf(",");
+    outputs[s] = direction * (vSum / (double)n);
+
+    // Slow down gracefully
+    float v = (float)(powers[s]) * direction;
+    while (fabs(v) > 5) {
+      v *= 0.9;
+      leftMotors.move((int)v);
+      rightMotors.move((int)v);
+      pros::delay(10);
     }
-    printf("\\right]\n\n");
-    printf("===== DONE =====\n");
-    fflush(stdout);
+    leftMotors.move(0);
+    rightMotors.move(0);
+
+    // Brief pause and flip direction
+    pros::delay(500);
+    direction = -direction;
+  }
+
+  leftMotors.brake();
+  rightMotors.brake();
+
+  // Print results
+  printf("\\left[");
+  for (int s = 0; s < numSteps; s++) {
+    printf("\\left(%d,%.4f\\right)", powers[s], outputs[s]);
+    if (s < numSteps - 1)
+      printf(",");
+  }
+  printf("\\right]\n\n");
+  printf("===== DONE =====\n");
+  fflush(stdout);
 }
-
