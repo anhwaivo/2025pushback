@@ -774,7 +774,7 @@ void rightcenterdescore() {
   pros::delay(50);
 
   // chassis.moveToPose(22, 22, 225, 1200);
-  chassis.moveToPose(4.5, 3.85, 220, 2100, {.maxSpeed = 67});
+  chassis.moveToPose(4.5, 3.75, 220, 2100, {.maxSpeed = 67});
   intakeMode = 1;
   pros::delay(1000);
   counterLoader.set_value(true);
