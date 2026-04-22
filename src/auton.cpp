@@ -777,7 +777,7 @@ void rightcenterdescore() {
   intakeMode = 2;
   pros::delay(800);
   counterLoader.set_value(false);
-  chassis.turnToHeading(90, 500, {});
+  chassis.turnToHeading(90, 650, {});
   resetposeskilly(1);
   pros::delay(50);
   
