@@ -764,14 +764,14 @@ void rightcenterdescore() {
   // chassis.turnToPoint(59.75, 47.25, 500, {}, true);
   chassis.turnToHeading(90, 650);
   counterLoader.set_value(true);
-  chassis.moveToPoint(59.5, 50.25, 600, {.maxSpeed = 60}, false);
+  chassis.moveToPoint(59.5, 50.25, 600, {.maxSpeed = 70}, false);
 
   resetposeskilly(1);
   pros::delay(50);
   // chassis.cancelMotion();  
 
-  chassis.turnToPoint(22.5, 47.25, 450, {.forwards = false}, true);
-  chassis.moveToPoint(22, 47.25, 1150, {.forwards = false, .maxSpeed = 67});
+  chassis.turnToPoint(20, 47.15, 450, {.forwards = false}, true);
+  chassis.moveToPoint(20, 47.15, 1150, {.forwards = false, .maxSpeed = 105});
   
   chassis.waitUntilDone();
   intakeMode = 2;
@@ -783,14 +783,15 @@ void rightcenterdescore() {
   
 
   // chassis.moveToPose(22, 22, 225, 1200);
-  chassis.moveToPose(4.5, 2, 220, 2100, {.maxSpeed = 68});
+  chassis.moveToPose(4.5, 3.85, 220, 2100, {.maxSpeed = 67});
   intakeMode = 1;
   pros::delay(1000);
   counterLoader.set_value(true);
   pros::delay(300);
   counterLoader.set_value(false);
   chassis.waitUntilDone();
-  chassis.turnToPoint(4.5, 2, 600);
+  chassis.turnToPoint(4.5, 3.5, 650);
+  // pros::delay(650);
   // intakeSpeed = 75;
   // chassis.cancelMotion();
   intakeMode = 4;
@@ -801,7 +802,7 @@ void rightcenterdescore() {
 
   // chassis.moveToPose(17, 37, 90, 1900);
 
-  chassis.moveToPose(22, 37.25, 90, 1200, {.forwards = false}, true);
+  chassis.moveToPose(22, 37.27, 90, 1200, {.forwards = false}, true);
   
   // chassis.moveToPoint(24.5, 41, 1400, {.forwards = false}, true);
   // pros::delay(300);
@@ -809,7 +810,7 @@ void rightcenterdescore() {
   descoreRight.set_value(false);
   chassis.turnToHeading(90, 400, {}, true);
   intakeMode = 0;
-  chassis.moveToPoint(10, 37.25, 1670, {.forwards = false}, true);
+  chassis.moveToPoint(9.75, 37.27, 1600, {.forwards = false}, true);
   chassis.turnToHeading(90, 9000, {}, false);
   
 

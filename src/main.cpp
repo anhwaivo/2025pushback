@@ -29,10 +29,10 @@ pros::Motor conveyor(9, pros::MotorGearset::blue);
 pros::Motor outtake(8, pros::MotorGearset::blue);
 
 // === Pneumatics ===
-pros::adi::Pneumatics stage('A', true);
-pros::adi::Pneumatics descoreRight('E', true); 
+pros::adi::Pneumatics stage('A', false);
+pros::adi::Pneumatics descoreRight('E', false); 
 pros::adi::Pneumatics counterLoader('F', false);
-pros::adi::Pneumatics descoreLeft('C', true);
+pros::adi::Pneumatics descoreLeft('C', false);
 pros::adi::Pneumatics odoLift('B', true);
 pros::adi::Pneumatics blockblock('D', false);
 
@@ -102,7 +102,7 @@ AutonSelector auton_selector;
 // - &pidTuneTurn
 // - &pidTuneVelocity
 // - &awp
-AutonSelector::routine_action_t manualAutonFunction = nullptr; // nullptr = use selector, or set to function pointer
+AutonSelector::routine_action_t manualAutonFunction = &rightcenterdescore; // nullptr = use selector, or set to function pointer
 
 void disabled() {
     // Update selector while disabled
@@ -130,9 +130,9 @@ bool stageState = false;
 bool gripperState = false;
 bool counterLoaderState = false;
 bool punchGoalState = false;
-bool descoreLeftState = true;
-bool descoreRightState = true;
-bool odoLiftState = false;
+bool descoreLeftState = false;
+bool descoreRightState = false;
+bool odoLiftState = true;
 bool doubleParkState = false;
 bool sequenceState = false;
 bool colorFilterEnabled = false;
@@ -374,8 +374,8 @@ void telemetryTaskFn(void* param) {
 
 void autonomous() {
     if (!disableBrainScreen) {
-        auton_selector.show_telemetry();
-        pros::Task telemetryTask(telemetryTaskFn, nullptr, "TelemetryTask");
+        // auton_selector.show_telemetry();
+        // pros::Task telemetryTask(telemetryTaskFn, nullptr, "TelemetryTask");
     }
    
 
