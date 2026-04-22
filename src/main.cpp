@@ -289,7 +289,7 @@ void intakeTaskFn() {
                 stage.set_value(false);
             } else if (intakeMode == 4) {
                 // Reverse all
-                intake.move(-72);
+                intake.move(-60);
                 conveyor.move(-intakeSpeed);
                 outtake.move(-intakeSpeed);
             }
