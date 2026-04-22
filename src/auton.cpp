@@ -747,6 +747,8 @@ void rightdescore7bloc() {
 }
 
 void rightcenterdescore() {
+  descoreLeft.set_value(true);
+  descoreRight.set_value(true);
   intakeSpeed = 127;
   intakeMode = 1;
   chassis.setPose(48.5, 17.5, 0);
@@ -792,13 +794,14 @@ void rightcenterdescore() {
   // intakeMode = 1;
 
   // chassis.moveToPose(17, 37, 90, 1900);
-
+  
+  descoreLeft.set_value(false);
+  descoreRight.set_value(false);
   chassis.moveToPose(22, 37.27, 90, 1200, {.forwards = false}, true);
 
   // chassis.moveToPoint(24.5, 41, 1400, {.forwards = false}, true);
   // pros::delay(300);
-  descoreLeft.set_value(false);
-  descoreRight.set_value(false);
+ 
   chassis.turnToHeading(90, 400, {}, true);
   intakeMode = 0;
   chassis.moveToPoint(9.75, 37.27, 1600, {.forwards = false}, true);
